@@ -1,0 +1,14 @@
+/* Payment Styles */
+.payment { 
+  padding: var(--spacing-3xl) 0; 
+  background-color: var(--gray-50);
+}
+
+.payment-form {
+  max-width: 500px;
+  margin: 0 auto;
+  background: var(--white);
+  padding: var(--spacing-2xl);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-lg);
+}

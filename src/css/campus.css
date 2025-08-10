@@ -1,0 +1,25 @@
+/* Campus Section Styles */
+.campus {
+  padding: var(--spacing-3xl) 0;
+  background-color: var(--gray-50);
+}
+
+.campus-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--spacing-xl);
+  margin-top: var(--spacing-2xl);
+}
+
+.campus-card {
+  background: var(--white);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-xl);
+  text-align: center;
+  box-shadow: var(--shadow-md);
+  transition: transform 0.3s ease;
+}
+
+.campus-card:hover {
+  transform: translateY(-5px);
+}

@@ -1,0 +1,49 @@
+/* Animations */
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes float {
+    0%, 100% { 
+        transform: translateY(0px); 
+    }
+    50% { 
+        transform: translateY(-20px); 
+    }
+}
+
+@keyframes fadeIn { 
+  from { opacity: 0; transform: translateY(20px); } 
+  to { opacity: 1; transform: translateY(0); } 
+}
+
+@keyframes slideIn {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+
+/* Aplicar animaciones a elementos */
+.info-card,
+.pricing-card,
+.contact-card,
+.feature,
+.faq-item,
+.privacy-section {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.fade-in { 
+  animation: fadeIn 0.5s ease-in; 
+}
+
+.slide-in {
+  animation: slideIn 0.5s ease-out;
+}
