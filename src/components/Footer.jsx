@@ -37,7 +37,7 @@ const Footer = () => {
           </div>
         </div>
         <div className="footer-bottom">
-          <p>&copy; 2024 Inter9 Soccer Academy Meliana. Todos los derechos reservados.</p>
+          <p>&copy; 2024 Inter9 Soccer Academy. Todos los derechos reservados.</p>
         </div>
       </div>
     </footer>

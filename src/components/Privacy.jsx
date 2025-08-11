@@ -7,7 +7,7 @@ const Privacy = () => {
         <div className="privacy-content">
           <h2>Política de Privacidad</h2>
           <p>
-            En Inter9 Soccer Academy Meliana, respetamos tu privacidad y estamos 
+            En Inter9 Soccer Academy, respetamos tu privacidad y estamos 
             comprometidos con la protección de tus datos personales.
           </p>
           <h3>Recopilación de Datos</h3>
@@ -28,11 +28,6 @@ const Privacy = () => {
           <p>
             Implementamos medidas de seguridad apropiadas para proteger tus 
             datos contra acceso no autorizado, alteración o divulgación.
-          </p>
-          <h3>Contacto</h3>
-          <p>
-            Si tienes preguntas sobre esta política, puedes contactarnos en 
-            info@inter9meliana.com
           </p>
         </div>
       </div>

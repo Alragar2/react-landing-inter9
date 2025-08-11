@@ -25,11 +25,37 @@ const InscriptionForm = ({ isVisible, onClose }) => {
     const [touchedFields, setTouchedFields] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
 
+    // Función para determinar si un campo es inválido
+    const isFieldInvalid = (fieldName, fieldValue) => {
+        // Para campos select, siempre validar si están vacíos
+        if (['categoria', 'demarcacion', 'talla', 'lateralidad'].includes(fieldName)) {
+            return !fieldValue || fieldValue === '' || fieldValue.trim() === '';
+        }
+        // Para otros campos, solo validar si han sido tocados
+        return touchedFields[fieldName] && (!fieldValue || fieldValue === '' || fieldValue.trim() === '');
+    };
+
+    // Función para determinar si un campo es válido y debe mostrarse en verde
+    const isFieldValid = (fieldName, fieldValue) => {
+        // Para campos select, mostrar verde si tienen un valor válido
+        if (['categoria', 'demarcacion', 'talla', 'lateralidad'].includes(fieldName)) {
+            return fieldValue && fieldValue !== '' && fieldValue.trim() !== '';
+        }
+        // Para otros campos, solo si han sido tocados y tienen valor
+        return touchedFields[fieldName] && fieldValue && fieldValue !== '' && fieldValue.trim() !== '';
+    };
+
     const handleInputChange = (e) => {
         const { name, value, type, checked } = e.target;
         setFormData(prev => ({
             ...prev,
             [name]: type === 'checkbox' ? checked : value
+        }));
+        
+        // Marcamos como touched cuando se cambia cualquier valor
+        setTouchedFields(prev => ({
+            ...prev,
+            [name]: true
         }));
     };
 
@@ -39,6 +65,17 @@ const InscriptionForm = ({ isVisible, onClose }) => {
             ...prev,
             [name]: true
         }));
+    };
+
+    // Manejar el focus para marcar inmediatamente como touched en selects
+    const handleFocus = (e) => {
+        const { name } = e.target;
+        if (e.target.tagName.toLowerCase() === 'select') {
+            setTouchedFields(prev => ({
+                ...prev,
+                [name]: true
+            }));
+        }
     };
 
     const handleSubmit = async (e) => {
@@ -121,7 +158,7 @@ const InscriptionForm = ({ isVisible, onClose }) => {
                                 value={formData.nombreNino}
                                 onChange={handleInputChange}
                                 onBlur={handleBlur}
-                                className={touchedFields.nombreNino ? 'touched' : ''}
+                                className={`${touchedFields.nombreNino ? 'touched' : ''} ${isFieldInvalid('nombreNino', formData.nombreNino) ? 'invalid' : ''}`}
                                 required
                             />
                         </div>
@@ -134,7 +171,7 @@ const InscriptionForm = ({ isVisible, onClose }) => {
                                 value={formData.apellidos}
                                 onChange={handleInputChange}
                                 onBlur={handleBlur}
-                                className={touchedFields.apellidos ? 'touched' : ''}
+                                className={`${touchedFields.apellidos ? 'touched' : ''} ${isFieldInvalid('apellidos', formData.apellidos) ? 'invalid' : ''}`}
                                 required
                             />
                         </div>
@@ -150,7 +187,7 @@ const InscriptionForm = ({ isVisible, onClose }) => {
                                 value={formData.fechaNacimiento}
                                 onChange={handleInputChange}
                                 onBlur={handleBlur}
-                                className={touchedFields.fechaNacimiento ? 'touched' : ''}
+                                className={`${touchedFields.fechaNacimiento ? 'touched' : ''} ${isFieldInvalid('fechaNacimiento', formData.fechaNacimiento) ? 'invalid' : ''}`}
                                 required
                             />
                         </div>
@@ -163,7 +200,7 @@ const InscriptionForm = ({ isVisible, onClose }) => {
                                 value={formData.edad}
                                 onChange={handleInputChange}
                                 onBlur={handleBlur}
-                                className={touchedFields.edad ? 'touched' : ''}
+                                className={`${touchedFields.edad ? 'touched' : ''} ${isFieldInvalid('edad', formData.edad) ? 'invalid' : ''}`}
                                 min="3"
                                 max="17"
                                 required
@@ -180,7 +217,8 @@ const InscriptionForm = ({ isVisible, onClose }) => {
                                 value={formData.categoria}
                                 onChange={handleInputChange}
                                 onBlur={handleBlur}
-                                className={touchedFields.categoria ? 'touched' : ''}
+                                onFocus={handleFocus}
+                                className={`${touchedFields.categoria ? 'touched' : ''} ${isFieldInvalid('categoria', formData.categoria) ? 'invalid' : ''} ${isFieldValid('categoria', formData.categoria) ? 'valid' : ''}`}
                                 required
                             >
                                 <option value="">Seleccione una categoría</option>
@@ -196,7 +234,8 @@ const InscriptionForm = ({ isVisible, onClose }) => {
                                 value={formData.demarcacion}
                                 onChange={handleInputChange}
                                 onBlur={handleBlur}
-                                className={touchedFields.demarcacion ? 'touched' : ''}
+                                onFocus={handleFocus}
+                                className={`${touchedFields.demarcacion ? 'touched' : ''} ${isFieldInvalid('demarcacion', formData.demarcacion) ? 'invalid' : ''} ${isFieldValid('demarcacion', formData.demarcacion) ? 'valid' : ''}`}
                                 required
                             >
                                 <option value="">Seleccione una demarcación</option>
@@ -216,7 +255,8 @@ const InscriptionForm = ({ isVisible, onClose }) => {
                                 value={formData.talla}
                                 onChange={handleInputChange}
                                 onBlur={handleBlur}
-                                className={touchedFields.talla ? 'touched' : ''}
+                                onFocus={handleFocus}
+                                className={`${touchedFields.talla ? 'touched' : ''} ${isFieldInvalid('talla', formData.talla) ? 'invalid' : ''} ${isFieldValid('talla', formData.talla) ? 'valid' : ''}`}
                                 required
                             >
                                 <option value="">Seleccione una talla</option>
@@ -240,7 +280,8 @@ const InscriptionForm = ({ isVisible, onClose }) => {
                                 value={formData.lateralidad}
                                 onChange={handleInputChange}
                                 onBlur={handleBlur}
-                                className={touchedFields.lateralidad ? 'touched' : ''}
+                                onFocus={handleFocus}
+                                className={`${touchedFields.lateralidad ? 'touched' : ''} ${isFieldInvalid('lateralidad', formData.lateralidad) ? 'invalid' : ''} ${isFieldValid('lateralidad', formData.lateralidad) ? 'valid' : ''}`}
                                 required
                             >
                                 <option value="">Seleccione una lateralidad</option>
@@ -264,7 +305,7 @@ const InscriptionForm = ({ isVisible, onClose }) => {
                                 value={formData.nombreTutor}
                                 onChange={handleInputChange}
                                 onBlur={handleBlur}
-                                className={touchedFields.nombreTutor ? 'touched' : ''}
+                                className={`${touchedFields.nombreTutor ? 'touched' : ''} ${isFieldInvalid('nombreTutor', formData.nombreTutor) ? 'invalid' : ''}`}
                                 placeholder="Nombre completo del tutor"
                                 required
                             />
@@ -278,7 +319,7 @@ const InscriptionForm = ({ isVisible, onClose }) => {
                                 value={formData.telefono}
                                 onChange={handleInputChange}
                                 onBlur={handleBlur}
-                                className={touchedFields.telefono ? 'touched' : ''}
+                                className={`${touchedFields.telefono ? 'touched' : ''} ${isFieldInvalid('telefono', formData.telefono) ? 'invalid' : ''}`}
                                 placeholder="Ej: 600 123 456"
                                 required
                             />
@@ -297,7 +338,7 @@ const InscriptionForm = ({ isVisible, onClose }) => {
                             value={formData.direccion}
                             onChange={handleInputChange}
                             onBlur={handleBlur}
-                            className={touchedFields.direccion ? 'touched' : ''}
+                            className={`${touchedFields.direccion ? 'touched' : ''} ${isFieldInvalid('direccion', formData.direccion) ? 'invalid' : ''}`}
                             placeholder="Calle, número, piso, puerta"
                             required
                         />
@@ -312,7 +353,7 @@ const InscriptionForm = ({ isVisible, onClose }) => {
                                 value={formData.ciudad}
                                 onChange={handleInputChange}
                                 onBlur={handleBlur}
-                                className={touchedFields.ciudad ? 'touched' : ''}
+                                className={`${touchedFields.ciudad ? 'touched' : ''} ${isFieldInvalid('ciudad', formData.ciudad) ? 'invalid' : ''}`}
                                 placeholder="Ciudad de residencia"
                                 required
                             />
@@ -326,7 +367,7 @@ const InscriptionForm = ({ isVisible, onClose }) => {
                                 value={formData.codigoPostal}
                                 onChange={handleInputChange}
                                 onBlur={handleBlur}
-                                className={touchedFields.codigoPostal ? 'touched' : ''}
+                                className={`${touchedFields.codigoPostal ? 'touched' : ''} ${isFieldInvalid('codigoPostal', formData.codigoPostal) ? 'invalid' : ''}`}
                                 placeholder="46000"
                                 required
                             />

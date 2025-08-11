@@ -7,9 +7,11 @@ const Pricing = () => {
       name: "Individual",
       price: 25,
       currency: "€",
-      period: "/mes",
+      period: "/sesión",
       popular: false,
       features: [
+        "1 sesión de entrenamiento",
+        "Asesoramiento personalizado",
       ],
       buttonText: "Seleccionar",
       buttonLink: "#inscripcion"
@@ -19,9 +21,12 @@ const Pricing = () => {
       name: "Pareja",
       price: 20,
       currency: "€",
-      period: "/persona",
+      period: "/sesión",
       popular: false,
       features: [
+        "1 sesión de entrenamiento",
+        "Asesoramiento personalizado",
+        "20€ por persona"
       ],
       buttonText: "Seleccionar",
       buttonLink: "#inscripcion"
@@ -31,9 +36,12 @@ const Pricing = () => {
       name: "Trío",
       price: 15,
       currency: "€",
-      period: "/persona",
+      period: "/sesión",
       popular: false,
       features: [
+        "1 sesión de entrenamiento",
+        "Asesoramiento personalizado",
+        "15€ por persona"
       ],
       buttonText: "Seleccionar",
       buttonLink: "#inscripcion"
@@ -46,6 +54,8 @@ const Pricing = () => {
       period: "/mes",
       popular: false,
       features: [
+        "Sesiones de entrenamiento grupales",
+        "Asesoramiento personalizado"
       ],
       buttonText: "Seleccionar",
       buttonLink: "#inscripcion"

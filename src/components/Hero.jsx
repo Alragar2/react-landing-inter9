@@ -5,7 +5,7 @@ const Hero = () => {
     <section id="hero" className="hero">
       <div className="hero-content">
         <div className="hero-text">
-          <h1>Inter9 Soccer Academy Meliana</h1>
+          <h1>Inter9 Soccer Academy</h1>
           <p>
             Descubre tu potencial en el fútbol con nuestra academia de élite. 
             Entrenamiento profesional, instalaciones de primera clase y un ambiente 

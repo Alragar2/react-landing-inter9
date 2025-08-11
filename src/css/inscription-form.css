@@ -202,72 +202,46 @@
   transform: translateY(-2px);
 }
 
-/* Form validation styles */
-.form-group input:invalid:not(:focus):not(:placeholder-shown),
-.form-group textarea:invalid:not(:focus):not(:placeholder-shown),
-.form-group select:invalid:not(:focus) {
-  border-color: #dc3545;
-  background-color: #fff5f5;
-}
+/* Form validation styles - SOLO USAMOS NUESTRAS CLASES JAVASCRIPT */
 
-.form-group input:valid:not(:focus):not(:placeholder-shown),
-.form-group textarea:valid:not(:focus):not(:placeholder-shown),
-.form-group select:valid:not(:focus) {
-  border-color: #28a745;
-  background-color: #f8fff8;
-}
-
-/* Validación específica para campos requeridos vacíos */
-.form-group input[required]:invalid,
-.form-group textarea[required]:invalid,
-.form-group select[required]:invalid {
-  border-color: #dc3545;
-  background-color: #fff5f5;
-}
-
-.form-group input[required]:valid,
-.form-group textarea[required]:valid,
-.form-group select[required]:valid {
-  border-color: #28a745;
-  background-color: #f8fff8;
-}
-
-/* Estados especiales para selects */
-.form-group select[required][value=""] {
-  border-color: #dc3545;
-  background-color: #fff5f5;
-}
-
-.form-group select[required]:not([value=""]) {
-  border-color: #28a745;
-  background-color: #f8fff8;
-}
-
-/* Asegurar que los placeholders sean visibles incluso en estados de validación */
-.form-group input:invalid::placeholder,
-.form-group input:valid::placeholder,
-.form-group textarea:invalid::placeholder,
-.form-group textarea:valid::placeholder {
+/* Asegurar que los placeholders sean visibles */
+.form-group input::placeholder,
+.form-group textarea::placeholder {
   color: #6c757d;
   opacity: 0.8;
 }
 
-/* Estilos adicionales para mejor feedback visual */
-.form-group input:focus:invalid,
-.form-group textarea:focus:invalid,
-.form-group select:focus:invalid {
-  border-color: #dc3545;
-  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+/* Estilos de focus */
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
 }
 
-.form-group input:focus:valid,
-.form-group textarea:focus:valid,
-.form-group select:focus:valid {
-  border-color: #28a745;
-  box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+/* Estilo específico para campos que han sido tocados - MAYOR PRIORIDAD */
+.form-group input.invalid,
+.form-group textarea.invalid,
+.form-group select.invalid {
+  border-color: #dc3545 !important;
+  background-color: #fff5f5 !important;
 }
 
-/* Estilo específico para campos que han sido tocados */
+.form-group input.valid,
+.form-group textarea.valid,
+.form-group select.valid {
+  border-color: #28a745 !important;
+  background-color: #f8fff8 !important;
+}
+
+.form-group input.touched:valid:not(.invalid),
+.form-group textarea.touched:valid:not(.invalid),
+.form-group select.touched:valid:not(.invalid) {
+  border-color: #28a745 !important;
+  background-color: #f8fff8 !important;
+}
+
+/* Mantener estilos anteriores pero con menor prioridad */
 .form-group input.touched:invalid,
 .form-group textarea.touched:invalid,
 .form-group select.touched:invalid {
