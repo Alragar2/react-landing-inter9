@@ -4,7 +4,6 @@ import './styles-modular.css';
 // Importar componentes
 import Header from './components/Header';
 import Hero from './components/Hero';
-import Campus from './components/Campus';
 import Gallery from './components/Gallery';
 import Pricing from './components/Pricing';
 import Registration from './components/Registration';
