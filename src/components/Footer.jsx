@@ -27,6 +27,7 @@ const Footer = () => {
             <p><i className="fas fa-map-marker-alt"></i> Meliana, Valencia</p>
             <p><i className="fas fa-map-marker-alt"></i> Albuixech, Valencia</p>
             <p><i className="fas fa-envelope"></i> info@inter9meliana.com</p>
+            <p><i className="fas fa-phone"></i> +34 628 536 290</p>
           </div>
           <div className="footer-section">
             <h3>Horarios</h3>
