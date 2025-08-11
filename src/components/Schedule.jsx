@@ -4,7 +4,7 @@ const Schedule = () => {
   const scheduleData = [
     {
       day: "LUNES",
-      location: "FUERZA",
+      location: "FUERZA MELIANA",
       sessions: [
         { time: "18:00 A 18:30" },
         { time: "18:30 A 19:00" }

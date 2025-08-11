@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
+import { getFirestore, connectFirestoreEmulator } from "firebase/firestore";
 import { getAnalytics } from "firebase/analytics";
 
 // Your web app's Firebase configuration
@@ -15,16 +15,46 @@ const firebaseConfig = {
   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
 
-// Verificar que las variables de entorno estén configuradas
-if (!firebaseConfig.apiKey || firebaseConfig.apiKey === 'tu-api-key-aqui') {
-  console.warn('⚠️  Firebase no está configurado correctamente. Por favor, configura las variables de entorno en el archivo .env');
+// Validación completa de configuración
+console.log('🔧 [Firebase Config] Validando configuración...');
+const requiredFields = ['apiKey', 'authDomain', 'projectId', 'storageBucket', 'messagingSenderId', 'appId'];
+const missingFields = requiredFields.filter(field => !firebaseConfig[field]);
+
+if (missingFields.length > 0) {
+  console.error('❌ [Firebase Config] Campos faltantes:', missingFields);
+  console.error('🔧 [Firebase Config] Configuración actual:', firebaseConfig);
+  throw new Error(`Firebase mal configurado. Faltan: ${missingFields.join(', ')}`);
 }
 
+console.log('✅ [Firebase Config] Configuración válida');
+console.log('📊 [Firebase Config] Proyecto:', firebaseConfig.projectId);
+
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
+let app;
+try {
+  app = initializeApp(firebaseConfig);
+  console.log('✅ [Firebase App] Inicializado correctamente');
+} catch (error) {
+  console.error('❌ [Firebase App] Error al inicializar:', error);
+  throw error;
+}
 
 // Initialize Cloud Firestore and get a reference to the service
-export const db = getFirestore(app);
+let db;
+try {
+  db = getFirestore(app);
+  console.log('✅ [Firestore] Inicializado correctamente');
+  
+  // En desarrollo, agregar debugging adicional
+  if (import.meta.env.DEV) {
+    console.log('🔧 [Firestore] Modo desarrollo - Debug habilitado');
+  }
+} catch (error) {
+  console.error('❌ [Firestore] Error al inicializar:', error);
+  throw error;
+}
+
+export { db };
 
 // Initialize Analytics (opcional)
 // export const analytics = getAnalytics(app);

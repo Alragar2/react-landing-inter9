@@ -9,25 +9,75 @@ export const inscriptionService = {
   
   // Crear una nueva inscripción
   async createInscription(inscriptionData) {
+    console.log('🔥 [Firebase Service] Iniciando createInscription...');
+    console.log('📊 [Firebase Service] Datos recibidos:', inscriptionData);
+    
     try {
-      const docRef = await addDoc(collection(db, COLLECTION_NAME), {
+      // Verificar conexión a Firebase
+      console.log('🌐 [Firebase Service] Verificando conexión a Firebase...');
+      console.log('🗄️ [Firebase Service] Base de datos:', db);
+      console.log('📁 [Firebase Service] Colección:', COLLECTION_NAME);
+
+      // Validar que db esté inicializado
+      if (!db) {
+        throw new Error('Base de datos Firestore no inicializada');
+      }
+
+      const dataToSave = {
         ...inscriptionData,
         fechaCreacion: Timestamp.now(),
         estado: 'pendiente' // Estados: pendiente, confirmada, rechazada
-      });
+      };
+
+      console.log('📝 [Firebase Service] Datos finales a guardar:', dataToSave);
+      console.log('✍️ [Firebase Service] Enviando a Firestore...');
+
+      // Intentar crear la colección y documento
+      const collectionRef = collection(db, COLLECTION_NAME);
+      console.log('📁 [Firebase Service] Referencia de colección creada:', collectionRef);
       
-      console.log('Inscripción guardada con ID: ', docRef.id);
+      const docRef = await addDoc(collectionRef, dataToSave);
+      
+      console.log('✅ [Firebase Service] Inscripción guardada con ID:', docRef.id);
       return {
         success: true,
         id: docRef.id,
         message: 'Inscripción enviada correctamente'
       };
     } catch (error) {
-      console.error('Error al guardar la inscripción: ', error);
+      console.error('💥 [Firebase Service] Error detallado:', {
+        message: error.message,
+        code: error.code,
+        name: error.name,
+        stack: error.stack,
+        completeError: error
+      });
+
+      // Diagnóstico específico por tipo de error
+      let userMessage = 'Error al enviar la inscripción. Inténtalo de nuevo.';
+      
+      if (error.code === 'permission-denied') {
+        console.error('🚫 [Firebase Service] Error de permisos - Verificar reglas de Firestore');
+        userMessage = 'Error de permisos. Contacta al administrador.';
+      } else if (error.code === 'unavailable') {
+        console.error('🌐 [Firebase Service] Firebase no disponible - Verificar conexión');
+        userMessage = 'Servicio temporalmente no disponible. Inténtalo más tarde.';
+      } else if (error.message.includes('network') || error.message.includes('fetch')) {
+        console.error('📡 [Firebase Service] Error de red - Verificar conectividad');
+        userMessage = 'Error de conexión. Verifica tu internet.';
+      } else if (error.code === 'invalid-argument') {
+        console.error('📝 [Firebase Service] Datos inválidos enviados a Firestore');
+        userMessage = 'Datos del formulario inválidos. Revisa la información.';
+      } else if (error.message.includes('400')) {
+        console.error('🔧 [Firebase Service] Error 400 - Bad Request, posible problema de configuración');
+        userMessage = 'Error de configuración. Contacta al soporte técnico.';
+      }
+
       return {
         success: false,
         error: error.message,
-        message: 'Error al enviar la inscripción. Inténtalo de nuevo.'
+        errorCode: error.code,
+        message: userMessage
       };
     }
   },
