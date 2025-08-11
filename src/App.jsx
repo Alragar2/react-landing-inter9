@@ -14,8 +14,6 @@ import Equipment from './components/Equipment';
 import FAQ from './components/FAQ';
 import Privacy from './components/Privacy';
 import Footer from './components/Footer';
-import FirebaseDebugPanel from './components/FirebaseDebugPanel';
-import ProductionDebugger from './components/ProductionDebugger';
 
 function App() {
   return (
@@ -31,8 +29,6 @@ function App() {
       <FAQ />
       <Privacy />
       <Footer />
-      <FirebaseDebugPanel />
-      <ProductionDebugger />
     </div>
   );
 }

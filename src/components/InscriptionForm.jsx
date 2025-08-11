@@ -1,7 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { inscriptionService } from '../firebase/inscriptionService';
-import { runFirebaseDebug } from '../utils/firebaseDebug';
-import { runCompleteFirestoreDiagnosis } from '../utils/firestoreDiagnosis';
 
 const InscriptionForm = ({ isVisible, onClose }) => {
     const [formData, setFormData] = useState({
@@ -27,16 +25,6 @@ const InscriptionForm = ({ isVisible, onClose }) => {
     const [touchedFields, setTouchedFields] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    // Debug Firebase al montar el componente
-    useEffect(() => {
-        console.log('🔍 [InscriptionForm] Componente montado - Ejecutando debug...');
-        runFirebaseDebug();
-        
-        // Ejecutar diagnóstico específico de Firestore para el error 400
-        console.log('🔧 [InscriptionForm] Ejecutando diagnóstico de Firestore...');
-        runCompleteFirestoreDiagnosis();
-    }, []);
-
     const handleInputChange = (e) => {
         const { name, value, type, checked } = e.target;
         setFormData(prev => ({
@@ -57,35 +45,20 @@ const InscriptionForm = ({ isVisible, onClose }) => {
         e.preventDefault();
         setIsSubmitting(true);
 
-        // Debug logging
-        console.log('🚀 Iniciando envío del formulario...');
-        console.log('📄 Datos del formulario:', formData);
-        console.log('🔧 Variables de entorno Firebase:', {
-            apiKey: import.meta.env.VITE_FIREBASE_API_KEY ? '✅ Configurado' : '❌ No configurado',
-            projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID ? '✅ Configurado' : '❌ No configurado',
-            authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN ? '✅ Configurado' : '❌ No configurado'
-        });
-
         try {
             // Validar datos antes de enviar
-            console.log('🔍 Validando datos...');
             const validation = inscriptionService.validateInscriptionData(formData);
-            console.log('📋 Resultado de validación:', validation);
 
             if (!validation.isValid) {
-                console.error('❌ Validación falló:', validation.message);
                 alert(validation.message);
                 setIsSubmitting(false);
                 return;
             }
 
             // Enviar datos a Firebase
-            console.log('🔥 Enviando a Firebase...');
             const result = await inscriptionService.createInscription(formData);
-            console.log('📤 Resultado de Firebase:', result);
 
             if (result.success) {
-                console.log('✅ Inscripción enviada exitosamente:', result.id);
                 alert('¡Inscripción enviada correctamente! Nos pondremos en contacto contigo pronto. ID de referencia: ' + result.id);
 
                 // Reset form
@@ -115,12 +88,10 @@ const InscriptionForm = ({ isVisible, onClose }) => {
                 // Cerrar el formulario
                 onClose();
             } else {
-                console.error('❌ Error en Firebase:', result);
                 alert('Error: ' + result.message);
             }
         } catch (error) {
-            console.error('💥 Error inesperado:', error);
-            console.error('📍 Stack trace:', error.stack);
+            console.error('Error al enviar inscripción:', error);
             alert('Error inesperado al enviar la inscripción. Por favor, inténtalo de nuevo.');
         } finally {
             setIsSubmitting(false);
