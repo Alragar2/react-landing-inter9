@@ -25,7 +25,6 @@ function App() {
       <Pricing />
       <Equipment />
       <Registration />
-      <Contact />
       <About />
       <FAQ />
       <Privacy />

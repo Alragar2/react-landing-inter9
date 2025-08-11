@@ -12,9 +12,9 @@ const Header = () => {
           <ul className="nav-menu">
             <li><a href="#hero" className="nav-link">Inicio</a></li>
             <li><a href="#pricing" className="nav-link">Precios</a></li>
-            <li><a href="#inscripcion" className="nav-link">Inscripción</a></li>
             <li><a href="#equipacion" className="nav-link">Equipación</a></li>
-            <li><a href="#contact" className="nav-link">Contacto</a></li>
+            <li><a href="#inscripcion" className="nav-link">Inscripción</a></li>
+            <li><a href="#about" className="nav-link">Sobre nosotros</a></li>
             <li><a href="#faq" className="nav-link">FAQ</a></li>
           </ul>
           <div className="hamburger">

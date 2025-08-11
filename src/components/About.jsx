@@ -7,10 +7,9 @@ const About = () => {
         <h2 className="text-center mb-12">Sobre Nosotros</h2>
         <div className="about-content">
           <p>
-            Inter9 Soccer Academy Meliana es una academia de fútbol comprometida con la 
+            Inter9 Soccer Academy es una academia de fútbol comprometida con la 
             formación integral de jóvenes futbolistas. Nuestro objetivo es desarrollar 
-            no solo las habilidades técnicas y tácticas, sino también los valores 
-            fundamentales del deporte.
+            las habilidades técnicas y tácticas de nuestros jugadores.
           </p>
           <p>
             Con más de 10 años de experiencia, hemos formado a cientos de jugadores 
@@ -19,11 +18,11 @@ const About = () => {
           </p>
           <div className="about-stats">
             <div className="stat">
-              <h3>500+</h3>
+              <h3>200+</h3>
               <p>Jugadores Formados</p>
             </div>
             <div className="stat">
-              <h3>15</h3>
+              <h3>6</h3>
               <p>Entrenadores Profesionales</p>
             </div>
             <div className="stat">
