@@ -23,7 +23,16 @@ const missingFields = requiredFields.filter(field => !firebaseConfig[field]);
 if (missingFields.length > 0) {
   console.error('❌ [Firebase Config] Campos faltantes:', missingFields);
   console.error('🔧 [Firebase Config] Configuración actual:', firebaseConfig);
-  throw new Error(`Firebase mal configurado. Faltan: ${missingFields.join(', ')}`);
+  
+  // En producción, mostrar un error más amigable
+  if (import.meta.env.PROD) {
+    console.error('🚨 ERROR DE CONFIGURACIÓN EN PRODUCCIÓN:');
+    console.error('Las variables de entorno de Firebase no están configuradas en tu hosting.');
+    console.error('Configura estas variables en tu plataforma de hosting:');
+    console.error('VITE_FIREBASE_API_KEY, VITE_FIREBASE_AUTH_DOMAIN, etc.');
+  }
+  
+  throw new Error(`🚨 CONFIGURAR VARIABLES DE ENTORNO EN HOSTING: ${missingFields.join(', ')}`);
 }
 
 console.log('✅ [Firebase Config] Configuración válida');

@@ -59,7 +59,7 @@ const InscriptionForm = ({ isVisible, onClose }) => {
             const result = await inscriptionService.createInscription(formData);
 
             if (result.success) {
-                alert('¡Inscripción enviada correctamente! Nos pondremos en contacto contigo pronto. ID de referencia: ' + result.id);
+                alert('¡Inscripción enviada correctamente! Nos pondremos en contacto contigo pronto.');
 
                 // Reset form
                 setFormData({
