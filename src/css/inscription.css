@@ -13,11 +13,11 @@
 }
 
 .registration-content {
-    max-width: 800px;
+    max-width: 1000px;
     margin: 0 auto;
 }
 
-.registration-content p {
+.registration-content > p {
     font-size: 1.1rem;
     margin-bottom: 2rem;
     max-width: 600px;
@@ -39,6 +39,9 @@
     font-size: 1.1rem;
     transition: var(--transition);
     box-shadow: var(--shadow-medium);
+    border: none;
+    cursor: pointer;
+    margin-bottom: 2rem;
 }
 
 .btn-registration:hover {
@@ -50,37 +53,4 @@
     font-size: 0.9rem;
     margin-top: 1rem;
     opacity: 0.9;
-}
-
-/* Estilos anteriores para compatibilidad */
-.registration-form {
-  max-width: 600px;
-  margin: 0 auto;
-  background: var(--white);
-  padding: var(--spacing-2xl);
-  border-radius: var(--border-radius-lg);
-  box-shadow: var(--shadow-lg);
-}
-
-.form-group {
-  margin-bottom: var(--spacing-lg);
-}
-
-.form-label {
-  display: block;
-  margin-bottom: var(--spacing-sm);
-  font-weight: 600;
-}
-
-.form-input {
-  width: 100%;
-  padding: var(--spacing-md);
-  border: 2px solid var(--gray-200);
-  border-radius: var(--border-radius-md);
-  font-size: var(--font-size-base);
-}
-
-.form-input:focus {
-  outline: none;
-  border-color: var(--primary-color);
 }

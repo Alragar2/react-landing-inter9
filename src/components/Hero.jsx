@@ -12,7 +12,7 @@ const Hero = () => {
             donde los sueños se hacen realidad.
           </p>
           <div className="hero-buttons">
-            <a href="#registration" className="btn btn-primary btn-lg">
+            <a href="#inscripcion" className="btn btn-primary btn-lg">
               Inscríbete Ahora
             </a>
             <a href="#about" className="btn btn-outline btn-lg">

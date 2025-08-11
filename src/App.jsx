@@ -6,7 +6,7 @@ import Header from './components/Header';
 import Hero from './components/Hero';
 import Gallery from './components/Gallery';
 import Pricing from './components/Pricing';
-import Registration from './components/Registration';
+import Inscription from './components/Inscription';
 import Contact from './components/Contact';
 import About from './components/About';
 import Schedule from './components/Schedule';
@@ -24,7 +24,7 @@ function App() {
       <Gallery />
       <Pricing />
       <Equipment />
-      <Registration />
+      <Inscription />
       <About />
       <FAQ />
       <Privacy />

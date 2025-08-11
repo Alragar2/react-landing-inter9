@@ -1,10 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
+import InscriptionForm from './InscriptionForm';
 
 const Registration = () => {
+  const [showForm, setShowForm] = useState(false);
+
   const handleRegistrationClick = () => {
-    // Aquí puedes abrir el formulario de inscripción en una nueva ventana
-    // o redirigir a una página específica
-    window.open('formulario-inscripcion.html', '_blank');
+    setShowForm(!showForm);
+  };
+
+  const handleCloseForm = () => {
+    setShowForm(false);
   };
 
   return (
@@ -13,10 +18,19 @@ const Registration = () => {
         <h2 className="section-title">¡Inscríbete Ya!</h2>
         <div className="registration-content">
           <p>Complete el formulario de inscripción y asegure la plaza de su hijo/a en nuestro Campus de Verano 2025.</p>
-          <a href="formulario-inscripcion.html" className="btn-registration" target="_blank" rel="noopener noreferrer">
+          <button 
+            onClick={handleRegistrationClick} 
+            className="btn-registration"
+          >
             <i className="fas fa-edit"></i>
-            Formulario de Inscripción
-          </a>
+            {showForm ? 'Cerrar Formulario' : 'Formulario de Inscripción'}
+          </button>
+          
+          <InscriptionForm 
+            isVisible={showForm} 
+            onClose={handleCloseForm}
+          />
+          
           <p className="registration-note">
             Tras completar el formulario, realice el pago según las instrucciones para confirmar la plaza.
           </p>
