@@ -2,6 +2,45 @@ import React, { useState } from 'react';
 import { inscriptionService } from '../firebase/inscriptionService';
 
 const InscriptionForm = ({ isVisible, onClose }) => {
+    // Planes de precios disponibles
+    const pricingPlans = [
+        {
+            id: 'individual',
+            name: "Individual",
+            price: 25,
+            period: "/sesión",
+            description: "1 sesión de entrenamiento personalizado"
+        },
+        {
+            id: 'pareja',
+            name: "Pareja",
+            price: 20,
+            period: "/sesión",
+            description: "1 sesión de entrenamiento (20€ por persona)"
+        },
+        {
+            id: 'trio',
+            name: "Trío",
+            price: 15,
+            period: "/sesión",
+            description: "1 sesión de entrenamiento (15€ por persona)"
+        },
+        {
+            id: 'grupal-mensual',
+            name: "Grupal Mensual",
+            price: 40,
+            period: "/mes",
+            description: "Sesiones de entrenamiento grupales"
+        },
+        {
+            id: 'campus-verano',
+            name: "Campus de Verano",
+            price: 120,
+            period: "/semana",
+            description: "Campus completo con equipación incluida"
+        }
+    ];
+
     const [formData, setFormData] = useState({
         nombreNino: '',
         apellidos: '',
@@ -11,6 +50,8 @@ const InscriptionForm = ({ isVisible, onClose }) => {
         demarcacion: '',
         talla: '',
         lateralidad: '',
+        planSeleccionado: '',
+        precioTotal: 0,
         nombreTutor: '',
         telefono: '',
         direccion: '',
@@ -28,7 +69,7 @@ const InscriptionForm = ({ isVisible, onClose }) => {
     // Función para determinar si un campo es inválido
     const isFieldInvalid = (fieldName, fieldValue) => {
         // Para campos select, siempre validar si están vacíos
-        if (['categoria', 'demarcacion', 'talla', 'lateralidad'].includes(fieldName)) {
+        if (['categoria', 'demarcacion', 'talla', 'lateralidad', 'planSeleccionado'].includes(fieldName)) {
             return !fieldValue || fieldValue === '' || fieldValue.trim() === '';
         }
         // Para otros campos, solo validar si han sido tocados
@@ -38,7 +79,7 @@ const InscriptionForm = ({ isVisible, onClose }) => {
     // Función para determinar si un campo es válido y debe mostrarse en verde
     const isFieldValid = (fieldName, fieldValue) => {
         // Para campos select, mostrar verde si tienen un valor válido
-        if (['categoria', 'demarcacion', 'talla', 'lateralidad'].includes(fieldName)) {
+        if (['categoria', 'demarcacion', 'talla', 'lateralidad', 'planSeleccionado'].includes(fieldName)) {
             return fieldValue && fieldValue !== '' && fieldValue.trim() !== '';
         }
         // Para otros campos, solo si han sido tocados y tienen valor
@@ -47,10 +88,20 @@ const InscriptionForm = ({ isVisible, onClose }) => {
 
     const handleInputChange = (e) => {
         const { name, value, type, checked } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: type === 'checkbox' ? checked : value
-        }));
+        
+        if (name === 'planSeleccionado') {
+            const selectedPlan = pricingPlans.find(plan => plan.id === value);
+            setFormData(prev => ({
+                ...prev,
+                [name]: value,
+                precioTotal: selectedPlan ? selectedPlan.price : 0
+            }));
+        } else {
+            setFormData(prev => ({
+                ...prev,
+                [name]: type === 'checkbox' ? checked : value
+            }));
+        }
         
         // Marcamos como touched cuando se cambia cualquier valor
         setTouchedFields(prev => ({
@@ -108,6 +159,8 @@ const InscriptionForm = ({ isVisible, onClose }) => {
                     demarcacion: '',
                     talla: '',
                     lateralidad: '',
+                    planSeleccionado: '',
+                    precioTotal: 0,
                     nombreTutor: '',
                     telefono: '',
                     direccion: '',
@@ -291,6 +344,49 @@ const InscriptionForm = ({ isVisible, onClose }) => {
                             </select>
                         </div>
                     </div>
+                </div>
+
+                <div className="form-section">
+                    <h4>Plan y Precio</h4>
+                    <div className="form-group">
+                        <label htmlFor="planSeleccionado">Selecciona tu Plan *</label>
+                        <select
+                            id="planSeleccionado"
+                            name="planSeleccionado"
+                            value={formData.planSeleccionado}
+                            onChange={handleInputChange}
+                            onBlur={handleBlur}
+                            onFocus={handleFocus}
+                            className={`${touchedFields.planSeleccionado ? 'touched' : ''} ${isFieldInvalid('planSeleccionado', formData.planSeleccionado) ? 'invalid' : ''} ${isFieldValid('planSeleccionado', formData.planSeleccionado) ? 'valid' : ''}`}
+                            required
+                        >
+                            <option value="">Seleccione un plan</option>
+                            {pricingPlans.map((plan) => (
+                                <option key={plan.id} value={plan.id}>
+                                    {plan.name} - €{plan.price}{plan.period} - {plan.description}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    
+                    {formData.planSeleccionado && (
+                        <div className="price-summary">
+                            <div className="selected-plan-info">
+                                <h5>Plan Seleccionado:</h5>
+                                <div className="plan-details">
+                                    <span className="plan-name">
+                                        {pricingPlans.find(p => p.id === formData.planSeleccionado)?.name}
+                                    </span>
+                                    <span className="plan-price">
+                                        €{formData.precioTotal}{pricingPlans.find(p => p.id === formData.planSeleccionado)?.period}
+                                    </span>
+                                </div>
+                                <p className="plan-description">
+                                    {pricingPlans.find(p => p.id === formData.planSeleccionado)?.description}
+                                </p>
+                            </div>
+                        </div>
+                    )}
                 </div>
 
                 <div className="form-section">

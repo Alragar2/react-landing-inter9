@@ -579,3 +579,43 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Plan Information Styles */
+.plan-info-display {
+  background: #f8f9fa;
+  border: 2px solid var(--primary-color);
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.plan-main-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.plan-name-display {
+  font-weight: 600;
+  color: var(--text-dark);
+  text-transform: capitalize;
+  font-size: 1.1rem;
+}
+
+.plan-price-display {
+  font-weight: 700;
+  color: var(--primary-color);
+  font-size: 1.3rem;
+}
+
+/* Responsive plan info */
+@media (max-width: 480px) {
+  .plan-main-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .plan-price-display {
+    font-size: 1.2rem;
+  }
+}

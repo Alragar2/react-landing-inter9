@@ -261,6 +261,7 @@ export const inscriptionService = {
       'demarcacion',
       'talla',
       'lateralidad',
+      'planSeleccionado',
       'nombreTutor',
       'telefono',
       'direccion',

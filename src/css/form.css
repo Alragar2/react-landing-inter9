@@ -39,3 +39,61 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Plan Selection Styles */
+.price-summary {
+  margin-top: var(--spacing-md);
+  padding: var(--spacing-lg);
+  background-color: #f8f9fa;
+  border-radius: var(--border-radius-md);
+  border: 2px solid var(--primary-color);
+}
+
+.selected-plan-info h5 {
+  margin: 0 0 var(--spacing-sm) 0;
+  color: var(--primary-color);
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.plan-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-sm);
+  padding: var(--spacing-sm);
+  background-color: white;
+  border-radius: var(--border-radius-sm);
+}
+
+.plan-name {
+  font-weight: 600;
+  color: var(--text-dark);
+  font-size: 1rem;
+}
+
+.plan-price {
+  font-weight: 700;
+  color: var(--primary-color);
+  font-size: 1.2rem;
+}
+
+.plan-description {
+  margin: 0;
+  color: var(--text-muted);
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
+/* Responsive adjustments for plan details */
+@media (max-width: 480px) {
+  .plan-details {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-xs);
+  }
+  
+  .plan-price {
+    font-size: 1.1rem;
+  }
+}

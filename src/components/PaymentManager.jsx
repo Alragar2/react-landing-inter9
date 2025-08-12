@@ -53,9 +53,9 @@ const PaymentManager = ({ inscription, onClose, onPaymentAdded }) => {
         }
     };
 
-    const montoCampus = 120;
+    const montoPlan = inscription.precioTotal || 120; // Usar precio del plan o 120 por defecto
     const totalPagado = inscription.totalPagado || 0;
-    const restante = Math.max(0, montoCampus - totalPagado);
+    const restante = Math.max(0, montoPlan - totalPagado);
 
     return (
         <div className="payment-manager-overlay" onClick={onClose}>
@@ -69,10 +69,15 @@ const PaymentManager = ({ inscription, onClose, onPaymentAdded }) => {
 
                 <div className="payment-summary">
                     <h4>{inscription.nombreNino} {inscription.apellidos}</h4>
+                    {inscription.planSeleccionado && (
+                        <div className="plan-info">
+                            <span className="plan-selected">Plan: {inscription.planSeleccionado}</span>
+                        </div>
+                    )}
                     <div className="payment-amounts">
                         <div className="amount-item">
-                            <span className="label">Precio Campus:</span>
-                            <span className="value">€{montoCampus}</span>
+                            <span className="label">Precio Total:</span>
+                            <span className="value">€{montoPlan}</span>
                         </div>
                         <div className="amount-item">
                             <span className="label">Total Pagado:</span>

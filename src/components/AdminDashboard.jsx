@@ -84,10 +84,10 @@ const AdminDashboard = ({ user, onLogout }) => {
     };
 
     const getPaymentStatus = (inscription) => {
-        const montoCampus = 120;
+        const montoPlan = inscription.precioTotal || 120; // Usar precio del plan o 120 por defecto
         const totalPagado = inscription.totalPagado || 0;
         
-        if (totalPagado >= montoCampus) {
+        if (totalPagado >= montoPlan) {
             return { status: 'pagado', text: 'Pagado', class: 'payment-paid' };
         } else if (totalPagado > 0) {
             return { status: 'parcial', text: `Parcial (€${totalPagado})`, class: 'payment-partial' };
@@ -236,6 +236,9 @@ const AdminDashboard = ({ user, onLogout }) => {
                                     <div className="inscription-details">
                                         <p><strong>Categoría:</strong> {inscription.categoria}</p>
                                         <p><strong>Demarcación:</strong> {inscription.demarcacion}</p>
+                                        {inscription.planSeleccionado && (
+                                            <p><strong>Plan:</strong> {inscription.planSeleccionado} - €{inscription.precioTotal || 'N/A'}</p>
+                                        )}
                                         <p><strong>Tutor:</strong> {inscription.nombreTutor}</p>
                                         <p><strong>Teléfono:</strong> {inscription.telefono}</p>
                                     </div>
@@ -302,6 +305,18 @@ const AdminDashboard = ({ user, onLogout }) => {
                                 </div>
                             </div>
 
+                            {selectedInscription.planSeleccionado && (
+                                <div className="detail-section">
+                                    <h3>Plan Contratado</h3>
+                                    <div className="plan-info-display">
+                                        <div className="plan-main-info">
+                                            <span className="plan-name-display">{selectedInscription.planSeleccionado}</span>
+                                            <span className="plan-price-display">€{selectedInscription.precioTotal || 'No especificado'}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
                             <div className="detail-section">
                                 <h3>Datos del Tutor</h3>
                                 <div className="detail-grid">
@@ -351,8 +366,8 @@ const AdminDashboard = ({ user, onLogout }) => {
                                 <div className="payment-summary-modal">
                                     <div className="payment-totals">
                                         <div className="total-item">
-                                            <span>Precio Campus:</span>
-                                            <span>€120.00</span>
+                                            <span>Precio Total:</span>
+                                            <span>€{selectedInscription.precioTotal || 120}</span>
                                         </div>
                                         <div className="total-item">
                                             <span>Total Pagado:</span>
@@ -360,8 +375,8 @@ const AdminDashboard = ({ user, onLogout }) => {
                                         </div>
                                         <div className="total-item">
                                             <span>Restante:</span>
-                                            <span className={`${(selectedInscription.totalPagado || 0) >= 120 ? 'complete' : 'pending'}`}>
-                                                €{Math.max(0, 120 - (selectedInscription.totalPagado || 0))}
+                                            <span className={`${(selectedInscription.totalPagado || 0) >= (selectedInscription.precioTotal || 120) ? 'complete' : 'pending'}`}>
+                                                €{Math.max(0, (selectedInscription.precioTotal || 120) - (selectedInscription.totalPagado || 0))}
                                             </span>
                                         </div>
                                     </div>
