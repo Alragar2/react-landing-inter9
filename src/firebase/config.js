@@ -1,6 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getFirestore, connectFirestoreEmulator } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 import { getAnalytics } from "firebase/analytics";
 
 // Your web app's Firebase configuration
@@ -63,7 +64,17 @@ try {
   throw error;
 }
 
-export { db };
+// Initialize Firebase Authentication
+let auth;
+try {
+  auth = getAuth(app);
+  console.log('✅ [Firebase Auth] Inicializado correctamente');
+} catch (error) {
+  console.error('❌ [Firebase Auth] Error al inicializar:', error);
+  throw error;
+}
+
+export { db, auth };
 
 // Initialize Analytics (opcional)
 // export const analytics = getAnalytics(app);

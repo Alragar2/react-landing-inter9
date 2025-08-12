@@ -25,6 +25,7 @@ export const inscriptionService = {
 
       const dataToSave = {
         ...inscriptionData,
+        createdAt: Timestamp.now(),
         fechaCreacion: Timestamp.now(),
         estado: 'pendiente' // Estados: pendiente, confirmada, rechazada
       };
@@ -95,15 +96,19 @@ export const inscriptionService = {
         });
       });
       
+      console.log(`✅ [Firebase Service] ${inscriptions.length} inscripciones cargadas exitosamente`);
+      
       return {
         success: true,
         data: inscriptions
       };
     } catch (error) {
-      console.error('Error al obtener inscripciones: ', error);
+      console.error('❌ [Firebase Service] Error al obtener inscripciones:', error);
+      
       return {
         success: false,
-        error: error.message
+        error: error.message,
+        message: 'Error al cargar las inscripciones'
       };
     }
   },
@@ -123,6 +128,103 @@ export const inscriptionService = {
       };
     } catch (error) {
       console.error('Error al actualizar inscripción: ', error);
+      return {
+        success: false,
+        error: error.message
+      };
+    }
+  },
+
+  // Agregar un pago a una inscripción
+  async addPayment(inscriptionId, paymentData) {
+    try {
+      console.log('🔥 [Firebase Service] Agregando pago a inscripción:', inscriptionId);
+      console.log('💰 [Firebase Service] Datos del pago:', paymentData);
+
+      const inscriptionRef = doc(db, COLLECTION_NAME, inscriptionId);
+      
+      // Obtener la inscripción actual
+      const inscriptionSnap = await getDocs(collection(db, COLLECTION_NAME));
+      let currentInscription = null;
+      
+      inscriptionSnap.forEach((doc) => {
+        if (doc.id === inscriptionId) {
+          currentInscription = { id: doc.id, ...doc.data() };
+        }
+      });
+
+      if (!currentInscription) {
+        throw new Error('Inscripción no encontrada');
+      }
+
+      // Preparar el nuevo pago
+      const newPayment = {
+        id: Date.now().toString(),
+        fecha: Timestamp.now(),
+        monto: parseFloat(paymentData.monto),
+        metodo: paymentData.metodo, // 'banco' o 'mano'
+        concepto: paymentData.concepto || 'Pago campus',
+        registradoPor: paymentData.registradoPor || 'Administrador',
+        notas: paymentData.notas || ''
+      };
+
+      // Obtener pagos existentes o crear array vacío
+      const pagosExistentes = currentInscription.pagos || [];
+      const nuevosPagos = [...pagosExistentes, newPayment];
+
+      // Calcular totales
+      const totalPagado = nuevosPagos.reduce((sum, pago) => sum + pago.monto, 0);
+      const montoCampus = 120; // Precio del campus
+      const estadoPago = totalPagado >= montoCampus ? 'pagado' : totalPagado > 0 ? 'parcial' : 'pendiente';
+
+      // Actualizar la inscripción
+      await updateDoc(inscriptionRef, {
+        pagos: nuevosPagos,
+        totalPagado: totalPagado,
+        estadoPago: estadoPago,
+        ultimoPago: newPayment,
+        fechaActualizacion: Timestamp.now()
+      });
+
+      console.log(`✅ [Firebase Service] Pago agregado exitosamente a inscripción ${inscriptionId}`);
+
+      return {
+        success: true,
+        message: 'Pago registrado correctamente',
+        data: newPayment
+      };
+    } catch (error) {
+      console.error('❌ [Firebase Service] Error al agregar pago:', error);
+      return {
+        success: false,
+        error: error.message,
+        message: 'Error al registrar el pago'
+      };
+    }
+  },
+
+  // Obtener historial de pagos de una inscripción
+  async getPaymentHistory(inscriptionId) {
+    try {
+      const inscriptionSnap = await getDocs(collection(db, COLLECTION_NAME));
+      let inscription = null;
+      
+      inscriptionSnap.forEach((doc) => {
+        if (doc.id === inscriptionId) {
+          inscription = { id: doc.id, ...doc.data() };
+        }
+      });
+
+      if (!inscription) {
+        throw new Error('Inscripción no encontrada');
+      }
+
+      return {
+        success: true,
+        data: inscription.pagos || []
+      };
+    } catch (error) {
+      console.error('❌ [Firebase Service] Error al obtener historial de pagos:', error);
       return {
         success: false,
         error: error.message
