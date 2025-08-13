@@ -94,6 +94,62 @@
   font-size: 0.9rem;
 }
 
+/* Session Fields Styles */
+.session-fields {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 1rem 0;
+}
+
+.session-fields h5 {
+  margin: 0 0 1rem 0;
+  color: var(--primary-color);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+/* Monto Input Group Styles */
+.monto-input-group {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.monto-input-group input {
+  flex: 1;
+}
+
+.btn-auto-price {
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  min-width: 60px;
+}
+
+.btn-auto-price:hover {
+  background: var(--primary-dark);
+  transform: translateY(-1px);
+}
+
+.btn-auto-price:active {
+  transform: translateY(0);
+}
+
+.btn-auto-price:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+  transform: none;
+}
+
 .payment-amounts {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));

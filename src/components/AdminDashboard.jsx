@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { inscriptionService } from '../firebase/inscriptionService';
 import { authService } from '../firebase/authService';
 import PaymentManager from './PaymentManager';
+import InscriptionCard from './InscriptionCard';
+import FiltersPanel from './FiltersPanel';
 import '../css/admin-dashboard.css';
 
 const AdminDashboard = ({ user, onLogout }) => {
@@ -13,6 +15,12 @@ const AdminDashboard = ({ user, onLogout }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [showPaymentManager, setShowPaymentManager] = useState(false);
     const [loadingPayments, setLoadingPayments] = useState(false);
+    const [showFilters, setShowFilters] = useState(false);
+    const [filters, setFilters] = useState({
+        categoria: '',
+        edad: '',
+        demarcacion: ''
+    });
 
     useEffect(() => {
         loadInscriptions();
@@ -54,11 +62,23 @@ const AdminDashboard = ({ user, onLogout }) => {
         }
     };
 
-    const filteredInscriptions = inscriptions.filter(inscription =>
-        inscription.nombreNino.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        inscription.apellidos.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        inscription.nombreTutor.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const filteredInscriptions = inscriptions.filter(inscription => {
+        // Filtro de búsqueda por texto
+        const matchesSearch = inscription.nombreNino.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            inscription.apellidos.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            inscription.nombreTutor.toLowerCase().includes(searchTerm.toLowerCase());
+        
+        // Filtro por categoría
+        const matchesCategory = !filters.categoria || inscription.categoria === filters.categoria;
+        
+        // Filtro por edad
+        const matchesAge = !filters.edad || inscription.edad.toString() === filters.edad;
+        
+        // Filtro por demarcación
+        const matchesDemarcacion = !filters.demarcacion || inscription.demarcacion === filters.demarcacion;
+        
+        return matchesSearch && matchesCategory && matchesAge && matchesDemarcacion;
+    });
 
     const formatDate = (dateString) => {
         try {
@@ -81,35 +101,6 @@ const AdminDashboard = ({ user, onLogout }) => {
         } catch {
             return 'Fecha no disponible';
         }
-    };
-
-    const getPaymentStatus = (inscription) => {
-        const montoPlan = inscription.precioTotal || 120; // Usar precio del plan o 120 por defecto
-        const totalPagado = inscription.totalPagado || 0;
-        
-        if (totalPagado >= montoPlan) {
-            return { status: 'pagado', text: 'Pagado', class: 'payment-paid' };
-        } else if (totalPagado > 0) {
-            return { status: 'parcial', text: `Parcial (€${totalPagado})`, class: 'payment-partial' };
-        } else {
-            return { status: 'pendiente', text: 'Pendiente', class: 'payment-pending' };
-        }
-    };
-
-    const getLastPaymentInfo = (inscription) => {
-        if (!inscription.ultimoPago) {
-            return null;
-        }
-        
-        const pago = inscription.ultimoPago;
-        const fecha = formatTimestamp(pago.fecha);
-        const metodo = pago.metodo === 'banco' ? '🏦 Banco' : '💵 Mano';
-        
-        return {
-            monto: pago.monto,
-            metodo: metodo,
-            fecha: fecha
-        };
     };
 
     const handlePaymentAdded = () => {
@@ -142,6 +133,28 @@ const AdminDashboard = ({ user, onLogout }) => {
     const handleInscriptionSelect = async (inscription) => {
         setSelectedInscription(inscription);
         await loadPaymentsForInscription(inscription.id);
+    };
+
+    // Manejar cambios en filtros
+    const handleFilterChange = (filterName, value) => {
+        setFilters(prev => ({
+            ...prev,
+            [filterName]: value
+        }));
+    };
+
+    // Limpiar filtros
+    const clearFilters = () => {
+        setFilters({
+            categoria: '',
+            edad: '',
+            demarcacion: ''
+        });
+    };
+
+    // Toggle del panel de filtros
+    const toggleFilters = () => {
+        setShowFilters(!showFilters);
     };
 
     if (loading) {
@@ -188,86 +201,88 @@ const AdminDashboard = ({ user, onLogout }) => {
                     </div>
                 )}
 
-                    <div className="admin-controls">
-                        <div className="search-box">
-                            <i className="fas fa-search"></i>
-                            <input
-                                type="text"
-                                placeholder="Buscar por nombre del niño, apellidos o tutor..."
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                            />
+                <div className={`admin-layout ${showFilters ? 'filters-open' : 'filters-closed'}`}>
+                    <FiltersPanel
+                        showFilters={showFilters}
+                        filters={filters}
+                        inscriptions={inscriptions}
+                        onFilterChange={handleFilterChange}
+                        onClearFilters={clearFilters}
+                        onToggleFilters={toggleFilters}
+                    />
+
+                    {/* Contenido Principal */}
+                    <div className="main-content">
+                        <div className="admin-controls">
+                            <div className="controls-row">
+                                <button 
+                                    className="btn-toggle-filters"
+                                    onClick={toggleFilters}
+                                >
+                                    <i className="fas fa-filter"></i>
+                                    {showFilters ? 'Ocultar Filtros' : 'Mostrar Filtros'}
+                                </button>
+                                
+                                <div className="search-box">
+                                    <i className="fas fa-search"></i>
+                                    <input
+                                        type="text"
+                                        placeholder="Buscar por nombre del niño, apellidos o tutor..."
+                                        value={searchTerm}
+                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                    />
+                                </div>
+                            </div>
+                            
+                            <div className="stats">
+                                <span className="stat-item">
+                                    <i className="fas fa-child"></i>
+                                    Total: {filteredInscriptions.length} de {inscriptions.length} inscripciones
+                                </span>
+                                {filters.categoria && (
+                                    <span className="stat-item">
+                                        <i className="fas fa-tag"></i>
+                                        Categoría: {filters.categoria}
+                                    </span>
+                                )}
+                                {filters.edad && (
+                                    <span className="stat-item">
+                                        <i className="fas fa-birthday-cake"></i>
+                                        Edad: {filters.edad} años
+                                    </span>
+                                )}
+                                {filters.demarcacion && (
+                                    <span className="stat-item">
+                                        <i className="fas fa-map-marker-alt"></i>
+                                        Demarcación: {filters.demarcacion}
+                                    </span>
+                                )}
+                            </div>
                         </div>
-                        <div className="stats">
-                            <span className="stat-item">
-                                <i className="fas fa-child"></i>
-                                Total: {inscriptions.length} inscripciones
-                            </span>
+
+                        <div className="inscriptions-grid">
+                            {filteredInscriptions.length === 0 ? (
+                                <div className="no-inscriptions">
+                                    <i className="fas fa-inbox fa-3x"></i>
+                                    <h3>No hay inscripciones</h3>
+                                    <p>
+                                        {searchTerm || filters.categoria || filters.edad || filters.demarcacion
+                                            ? 'No se encontraron inscripciones que coincidan con los filtros aplicados' 
+                                            : 'Aún no se han recibido inscripciones para el campus'
+                                        }
+                                    </p>
+                                </div>
+                            ) : (
+                                filteredInscriptions.map((inscription) => (
+                                    <InscriptionCard
+                                        key={inscription.id}
+                                        inscription={inscription}
+                                        onInscriptionSelect={handleInscriptionSelect}
+                                    />
+                                ))
+                            )}
                         </div>
                     </div>
-
-                <div className="inscriptions-grid">
-                    {filteredInscriptions.length === 0 ? (
-                        <div className="no-inscriptions">
-                            <i className="fas fa-inbox fa-3x"></i>
-                            <h3>No hay inscripciones</h3>
-                            <p>
-                                {searchTerm 
-                                    ? 'No se encontraron inscripciones que coincidan con la búsqueda' 
-                                    : 'Aún no se han recibido inscripciones para el campus'
-                                }
-                            </p>
-                        </div>
-                    ) : (
-                        filteredInscriptions.map((inscription) => {
-                            const paymentStatus = getPaymentStatus(inscription);
-                            const lastPayment = getLastPaymentInfo(inscription);
-                            
-                            return (
-                                <div 
-                                    key={inscription.id} 
-                                    className="inscription-card"
-                                    onClick={() => handleInscriptionSelect(inscription)}
-                                >
-                                    <div className="inscription-header">
-                                        <h3>{inscription.nombreNino} {inscription.apellidos}</h3>
-                                        <span className="inscription-age">{inscription.edad} años</span>
-                                    </div>
-                                    <div className="inscription-details">
-                                        <p><strong>Categoría:</strong> {inscription.categoria}</p>
-                                        <p><strong>Demarcación:</strong> {inscription.demarcacion}</p>
-                                        {inscription.planSeleccionado && (
-                                            <p><strong>Plan:</strong> {inscription.planSeleccionado} - €{inscription.precioTotal || 'N/A'}</p>
-                                        )}
-                                        <p><strong>Tutor:</strong> {inscription.nombreTutor}</p>
-                                        <p><strong>Teléfono:</strong> {inscription.telefono}</p>
-                                    </div>
-                                    
-                                    {/* Información de Pagos */}
-                                    <div className="payment-info">
-                                        <div className="payment-status">
-                                            <span className={`payment-badge ${paymentStatus.class}`}>
-                                                {paymentStatus.text}
-                                            </span>
-                                        </div>
-                                        {lastPayment && (
-                                            <div className="last-payment">
-                                                <small>
-                                                    <strong>Último pago:</strong> €{lastPayment.monto} - {lastPayment.metodo}
-                                                    <br />
-                                                    <span className="payment-date">{lastPayment.fecha}</span>
-                                                </small>
-                                            </div>
-                                        )}
-                                    </div>
-                                    
-                                    <div className="inscription-footer">
-                                        <small>Inscrito: {formatTimestamp(inscription.createdAt)}</small>
-                                    </div>
-                                </div>
-                            );
-                        })
-                    )}
                 </div>
             </div>
 
@@ -402,6 +417,23 @@ const AdminDashboard = ({ user, onLogout }) => {
                                                                 {formatTimestamp(pago.fecha)}
                                                             </div>
                                                         </div>
+                                                        
+                                                        {/* Información de sesión si existe */}
+                                                        {pago.esSesion && (pago.numeroSesion || pago.fechaSesion) && (
+                                                            <div className="session-info">
+                                                                {pago.numeroSesion && (
+                                                                    <span className="session-number">
+                                                                        📅 Sesión #{pago.numeroSesion}
+                                                                    </span>
+                                                                )}
+                                                                {pago.fechaSesion && (
+                                                                    <span className="session-date">
+                                                                        🗓️ {new Date(pago.fechaSesion).toLocaleDateString('es-ES')}
+                                                                    </span>
+                                                                )}
+                                                            </div>
+                                                        )}
+                                                        
                                                         {pago.concepto && (
                                                             <div className="payment-concept">{pago.concepto}</div>
                                                         )}

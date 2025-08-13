@@ -275,8 +275,8 @@ const InscriptionForm = ({ isVisible, onClose }) => {
                                 required
                             >
                                 <option value="">Seleccione una categoría</option>
-                                <option value="iniciacion">Fútbol 8</option>
-                                <option value="competicion">Fútbol 11</option>
+                                <option value="fut8">Fútbol 8</option>
+                                <option value="fut11">Fútbol 11</option>
                             </select>
                         </div>
                         <div className="form-group">

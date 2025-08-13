@@ -3,11 +3,19 @@ import { inscriptionService } from '../firebase/inscriptionService';
 import '../css/payment-manager.css';
 
 const PaymentManager = ({ inscription, onClose, onPaymentAdded }) => {
+    // Determinar si el plan es por sesión
+    const plansPorSesion = ['individual', 'pareja', 'trio'];
+    const esPlanPorSesion = plansPorSesion.includes(inscription.planSeleccionado);
+    
     const [paymentData, setPaymentData] = useState({
         monto: '',
         metodo: 'banco',
-        concepto: 'Pago campus',
-        notas: ''
+        concepto: esPlanPorSesion ? 'Pago sesión' : 'Pago plan',
+        notas: '',
+        // Campos específicos para sesiones
+        numeroSesion: '',
+        fechaSesion: '',
+        esSesion: esPlanPorSesion
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState('');
@@ -29,6 +37,14 @@ const PaymentManager = ({ inscription, onClose, onPaymentAdded }) => {
             return;
         }
 
+        // Validación específica para sesiones
+        if (esPlanPorSesion) {
+            if (!paymentData.numeroSesion || !paymentData.fechaSesion) {
+                setError('Para planes por sesión, debes especificar el número de sesión y la fecha');
+                return;
+            }
+        }
+
         setIsSubmitting(true);
         setError('');
 
@@ -39,7 +55,10 @@ const PaymentManager = ({ inscription, onClose, onPaymentAdded }) => {
             });
 
             if (result.success) {
-                alert('Pago registrado correctamente');
+                const mensaje = esPlanPorSesion 
+                    ? `Pago de sesión ${paymentData.numeroSesion} registrado correctamente`
+                    : 'Pago registrado correctamente';
+                alert(mensaje);
                 onPaymentAdded();
                 onClose();
             } else {
@@ -55,7 +74,34 @@ const PaymentManager = ({ inscription, onClose, onPaymentAdded }) => {
 
     const montoPlan = inscription.precioTotal || 120; // Usar precio del plan o 120 por defecto
     const totalPagado = inscription.totalPagado || 0;
-    const restante = Math.max(0, montoPlan - totalPagado);
+    
+    // Para planes por sesión, calcular de manera diferente
+    const calcularRestante = () => {
+        if (esPlanPorSesion) {
+            // Para planes por sesión, cada sesión es independiente
+            return montoPlan; // Precio por sesión
+        } else {
+            // Para planes fijos (campus, mensual), calcular restante total
+            return Math.max(0, montoPlan - totalPagado);
+        }
+    };
+    
+    const restante = calcularRestante();
+
+    // Función para autocompletar el precio de la sesión
+    const autocompletarPrecio = () => {
+        if (esPlanPorSesion) {
+            setPaymentData(prev => ({
+                ...prev,
+                monto: montoPlan.toString()
+            }));
+        } else {
+            setPaymentData(prev => ({
+                ...prev,
+                monto: restante.toString()
+            }));
+        }
+    };
 
     return (
         <div className="payment-manager-overlay" onClick={onClose}>
@@ -103,18 +149,29 @@ const PaymentManager = ({ inscription, onClose, onPaymentAdded }) => {
                     <div className="form-row">
                         <div className="form-group">
                             <label htmlFor="monto">Monto *</label>
-                            <input
-                                type="number"
-                                id="monto"
-                                name="monto"
-                                value={paymentData.monto}
-                                onChange={handleInputChange}
-                                placeholder="0.00"
-                                min="0"
-                                step="0.01"
-                                required
-                                disabled={isSubmitting}
-                            />
+                            <div className="monto-input-group">
+                                <input
+                                    type="number"
+                                    id="monto"
+                                    name="monto"
+                                    value={paymentData.monto}
+                                    onChange={handleInputChange}
+                                    placeholder="0.00"
+                                    min="0"
+                                    step="0.01"
+                                    required
+                                    disabled={isSubmitting}
+                                />
+                                <button 
+                                    type="button" 
+                                    className="btn-auto-price"
+                                    onClick={autocompletarPrecio}
+                                    disabled={isSubmitting}
+                                    title={esPlanPorSesion ? "Precio por sesión" : "Cantidad restante"}
+                                >
+                                    €{esPlanPorSesion ? montoPlan : restante}
+                                </button>
+                            </div>
                         </div>
 
                         <div className="form-group">
@@ -133,6 +190,41 @@ const PaymentManager = ({ inscription, onClose, onPaymentAdded }) => {
                         </div>
                     </div>
 
+                    {/* Campos específicos para sesiones */}
+                    {esPlanPorSesion && (
+                        <div className="session-fields">
+                            <h5>Información de la Sesión</h5>
+                            <div className="form-row">
+                                <div className="form-group">
+                                    <label htmlFor="numeroSesion">Número de Sesión *</label>
+                                    <input
+                                        type="number"
+                                        id="numeroSesion"
+                                        name="numeroSesion"
+                                        value={paymentData.numeroSesion}
+                                        onChange={handleInputChange}
+                                        placeholder="1, 2, 3..."
+                                        min="1"
+                                        required
+                                        disabled={isSubmitting}
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label htmlFor="fechaSesion">Fecha de la Sesión *</label>
+                                    <input
+                                        type="date"
+                                        id="fechaSesion"
+                                        name="fechaSesion"
+                                        value={paymentData.fechaSesion}
+                                        onChange={handleInputChange}
+                                        required
+                                        disabled={isSubmitting}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
                     <div className="form-group">
                         <label htmlFor="concepto">Concepto</label>
                         <input
@@ -141,7 +233,7 @@ const PaymentManager = ({ inscription, onClose, onPaymentAdded }) => {
                             name="concepto"
                             value={paymentData.concepto}
                             onChange={handleInputChange}
-                            placeholder="Ej: Pago campus, inscripción..."
+                            placeholder={esPlanPorSesion ? "Ej: Sesión de entrenamiento" : "Ej: Pago campus, inscripción..."}
                             disabled={isSubmitting}
                         />
                     </div>
