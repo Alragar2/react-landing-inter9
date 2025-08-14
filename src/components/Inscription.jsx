@@ -17,7 +17,7 @@ const Registration = () => {
       <div className="container">
         <h2 className="section-title">¡Inscríbete Ya!</h2>
         <div className="registration-content">
-          <p>Complete el formulario de inscripción y asegure la plaza de su hijo/a en nuestro Campus de Verano 2025.</p>
+          <p>Complete el formulario de inscripción y asegure la plaza de su hijo/a en nuestra academia.</p>
           <button 
             onClick={handleRegistrationClick} 
             className="btn-registration"

@@ -49,7 +49,7 @@ const Gallery = () => {
       <div className="gallery-carousel">
         <div 
           className="carousel-container"
-          style={{ transform: `translateX(-${currentSlide * 20}%)` }}
+          style={{ transform: `translateX(-${currentSlide * 33.333}%)` }}
         >
           {slides.map((slide, index) => (
             <div key={index} className="carousel-slide">

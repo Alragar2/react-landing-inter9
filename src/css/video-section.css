@@ -1,0 +1,290 @@
+/* Video Section Styles */
+.video-section {
+  padding: 80px 0;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.video-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('/images/background-inter9.jpeg') center/cover;
+  opacity: 0.05;
+  z-index: 1;
+}
+
+.video-content {
+  position: relative;
+  z-index: 2;
+}
+
+.video-header {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.video-title {
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.video-title i {
+  margin-right: 15px;
+  color: #dc3545;
+}
+
+.video-description {
+  font-size: 1.2rem;
+  color: #6c757d;
+  max-width: 800px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.video-container-main {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 40px;
+  align-items: start;
+}
+
+.video-wrapper {
+  position: relative;
+  background: white;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.video-wrapper::before {
+  content: '';
+  display: block;
+  padding-top: 56.25%; /* 16:9 aspect ratio */
+}
+
+.video-wrapper iframe {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  right: 20px;
+  bottom: 20px;
+  width: calc(100% - 40px);
+  height: calc(100% - 40px);
+  border: none;
+  border-radius: 15px;
+}
+
+.video-info {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.video-stats {
+  background: white;
+  border-radius: 15px;
+  padding: 30px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+.stat-item:hover {
+  background: var(--primary-color);
+  color: white;
+  transform: translateY(-2px);
+}
+
+.stat-item i {
+  font-size: 1.5rem;
+  color: var(--primary-color);
+  width: 30px;
+  text-align: center;
+}
+
+.stat-item:hover i {
+  color: white;
+}
+
+.stat-number {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--primary-color);
+}
+
+.stat-item:hover .stat-number {
+  color: white;
+}
+
+.stat-label {
+  font-size: 1rem;
+  color: #6c757d;
+  font-weight: 500;
+}
+
+.stat-item:hover .stat-label {
+  color: white;
+}
+
+.video-features {
+  background: white;
+  border-radius: 15px;
+  padding: 30px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.video-features h3 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--primary-color);
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.video-features ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.video-features li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  color: #495057;
+  font-weight: 500;
+  border-bottom: 1px solid #e9ecef;
+  transition: all 0.3s ease;
+}
+
+.video-features li:last-child {
+  border-bottom: none;
+}
+
+.video-features li:hover {
+  color: var(--primary-color);
+  padding-left: 10px;
+}
+
+.video-features li i {
+  color: #28a745;
+  font-size: 1.1rem;
+  width: 20px;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .video-container-main {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+  
+  .video-info {
+    flex-direction: row;
+    gap: 20px;
+  }
+  
+  .video-stats,
+  .video-features {
+    flex: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .video-section {
+    padding: 60px 0;
+  }
+  
+  .video-title {
+    font-size: 2.2rem;
+  }
+  
+  .video-description {
+    font-size: 1.1rem;
+    padding: 0 20px;
+  }
+  
+  .video-info {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .video-wrapper {
+    padding: 15px;
+  }
+  
+  .video-wrapper iframe {
+    top: 15px;
+    left: 15px;
+    right: 15px;
+    bottom: 15px;
+    width: calc(100% - 30px);
+    height: calc(100% - 30px);
+  }
+  
+  .video-stats {
+    padding: 20px;
+  }
+  
+  .stat-item {
+    padding: 12px;
+    gap: 10px;
+  }
+  
+  .stat-number {
+    font-size: 1.5rem;
+  }
+  
+  .video-features {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .video-title {
+    font-size: 1.8rem;
+  }
+  
+  .video-title i {
+    margin-right: 10px;
+  }
+  
+  .video-description {
+    font-size: 1rem;
+  }
+  
+  .stat-item {
+    flex-direction: column;
+    text-align: center;
+    gap: 8px;
+  }
+  
+  .stat-item i {
+    font-size: 1.3rem;
+  }
+  
+  .stat-number {
+    font-size: 1.3rem;
+  }
+}

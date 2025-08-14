@@ -7,6 +7,65 @@ import FiltersPanel from './FiltersPanel';
 import '../css/admin-dashboard.css';
 
 const AdminDashboard = ({ user, onLogout }) => {
+    // Array de horarios disponibles para mapear IDs a nombres
+    const horariosDisponibles = [
+        { 
+            id: 'lunes-meliana-1', 
+            name: 'Lunes 18:00 - 18:30',
+            location: 'Meliana'
+        },
+        { 
+            id: 'lunes-meliana-2', 
+            name: 'Lunes 18:30 - 19:00',
+            location: 'Meliana'
+        },
+        { 
+            id: 'martes-albuixech-1', 
+            name: 'Martes 19:00 - 20:00',
+            location: 'Albuixech'
+        },
+        { 
+            id: 'martes-albuixech-2', 
+            name: 'Martes 19:30 - 20:30',
+            location: 'Albuixech'
+        },
+        { 
+            id: 'miercoles-albuixech-1', 
+            name: 'Miércoles 19:00 - 20:00',
+            location: 'Albuixech'
+        },
+        { 
+            id: 'miercoles-albuixech-2', 
+            name: 'Miércoles 19:30 - 20:00',
+            location: 'Albuixech'
+        },
+        { 
+            id: 'miercoles-meliana-1', 
+            name: 'Jueves 19:00 - 20:00',
+            location: 'Meliana'
+        },
+        { 
+            id: 'miercoles-meliana-2', 
+            name: 'Jueves 20:30 - 21:30',
+            location: 'Meliana'
+        },
+        { 
+            id: 'viernes-meliana-1', 
+            name: 'Viernes 18:30 - 19:30',
+            location: 'Meliana'
+        },
+        { 
+            id: 'viernes-meliana-2', 
+            name: 'Viernes 19:30 - 20:30',
+            location: 'Meliana'
+        },
+        {
+            id: 'domingo',
+            name: 'Partidos, consultar horario',
+            location: 'Meliana'
+        }
+    ];
+
     const [inscriptions, setInscriptions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
@@ -17,7 +76,7 @@ const AdminDashboard = ({ user, onLogout }) => {
     const [loadingPayments, setLoadingPayments] = useState(false);
     const [showFilters, setShowFilters] = useState(false);
     const [filters, setFilters] = useState({
-        categoria: '',
+        horario: '',
         edad: '',
         demarcacion: ''
     });
@@ -25,6 +84,12 @@ const AdminDashboard = ({ user, onLogout }) => {
     useEffect(() => {
         loadInscriptions();
     }, []);
+
+    // Función helper para obtener nombre del horario
+    const getScheduleName = (horarioId) => {
+        const horario = horariosDisponibles.find(h => h.id === horarioId);
+        return horario ? `${horario.name} - ${horario.location}` : horarioId;
+    };
 
     const loadInscriptions = async () => {
         try {
@@ -68,8 +133,19 @@ const AdminDashboard = ({ user, onLogout }) => {
             inscription.apellidos.toLowerCase().includes(searchTerm.toLowerCase()) ||
             inscription.nombreTutor.toLowerCase().includes(searchTerm.toLowerCase());
         
-        // Filtro por categoría
-        const matchesCategory = !filters.categoria || inscription.categoria === filters.categoria;
+        // Filtro por horario
+        const matchesSchedule = !filters.horario || (() => {
+            if (!inscription.horarios) return false;
+            
+            if (Array.isArray(inscription.horarios)) {
+                // Si es array (nuevos datos), verificar si contiene el horario
+                return inscription.horarios.includes(filters.horario);
+            } else if (typeof inscription.horarios === 'string') {
+                // Si es string (datos antiguos), comparar directamente
+                return inscription.horarios === filters.horario;
+            }
+            return false;
+        })();
         
         // Filtro por edad
         const matchesAge = !filters.edad || inscription.edad.toString() === filters.edad;
@@ -77,7 +153,7 @@ const AdminDashboard = ({ user, onLogout }) => {
         // Filtro por demarcación
         const matchesDemarcacion = !filters.demarcacion || inscription.demarcacion === filters.demarcacion;
         
-        return matchesSearch && matchesCategory && matchesAge && matchesDemarcacion;
+        return matchesSearch && matchesSchedule && matchesAge && matchesDemarcacion;
     });
 
     const formatDate = (dateString) => {
@@ -146,7 +222,7 @@ const AdminDashboard = ({ user, onLogout }) => {
     // Limpiar filtros
     const clearFilters = () => {
         setFilters({
-            categoria: '',
+            horario: '',
             edad: '',
             demarcacion: ''
         });
@@ -239,10 +315,10 @@ const AdminDashboard = ({ user, onLogout }) => {
                                     <i className="fas fa-child"></i>
                                     Total: {filteredInscriptions.length} de {inscriptions.length} inscripciones
                                 </span>
-                                {filters.categoria && (
+                                {filters.horario && (
                                     <span className="stat-item">
-                                        <i className="fas fa-tag"></i>
-                                        Categoría: {filters.categoria}
+                                        <i className="fas fa-clock"></i>
+                                        Horario: {getScheduleName(filters.horario)}
                                     </span>
                                 )}
                                 {filters.edad && (
@@ -266,7 +342,7 @@ const AdminDashboard = ({ user, onLogout }) => {
                                     <i className="fas fa-inbox fa-3x"></i>
                                     <h3>No hay inscripciones</h3>
                                     <p>
-                                        {searchTerm || filters.categoria || filters.edad || filters.demarcacion
+                                        {searchTerm || filters.horario || filters.edad || filters.demarcacion
                                             ? 'No se encontraron inscripciones que coincidan con los filtros aplicados' 
                                             : 'Aún no se han recibido inscripciones para el campus'
                                         }

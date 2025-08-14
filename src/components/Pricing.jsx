@@ -51,6 +51,7 @@ const Pricing = () => {
       name: "Grupal Mensual",
       price: 40,
       currency: "€",
+      cloth: "(+25€ inscripción)",
       period: "/mes",
       popular: false,
       features: [
@@ -83,6 +84,7 @@ const Pricing = () => {
                 {plan.currency}{plan.price}
                 <span>{plan.period}</span>
               </div>
+              {plan.cloth && <span className="cloth">{plan.cloth}</span>}
               <ul>
                 {plan.features.map((feature, index) => (
                   <li key={index}>

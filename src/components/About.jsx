@@ -18,7 +18,7 @@ const About = () => {
           </p>
           <div className="about-stats">
             <div className="stat">
-              <h3>200+</h3>
+              <h3>+200</h3>
               <p>Jugadores Formados</p>
             </div>
             <div className="stat">
@@ -26,7 +26,7 @@ const About = () => {
               <p>Entrenadores Profesionales</p>
             </div>
             <div className="stat">
-              <h3>10+</h3>
+              <h3>+3</h3>
               <p>Años de Experiencia</p>
             </div>
           </div>

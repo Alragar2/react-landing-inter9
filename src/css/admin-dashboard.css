@@ -255,6 +255,74 @@
   color: #212529;
 }
 
+/* Schedule info styles */
+.schedule-info {
+  background: #f8f9fa;
+  border-radius: 6px;
+  padding: 0.75rem;
+  margin: 0.75rem 0;
+  border: 1px solid #e9ecef;
+}
+
+.schedule-info p {
+  margin: 0.25rem 0;
+}
+
+.location-badge {
+  background: #28a745;
+  color: white;
+  padding: 0.2rem 0.5rem;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  margin-left: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.location-badge i {
+  font-size: 0.7rem;
+}
+
+/* Multiple schedules styles */
+.horarios-list {
+  margin: 0.5rem 0;
+  max-height: 120px;
+  overflow-y: auto;
+}
+
+.horario-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.4rem 0.6rem;
+  margin-bottom: 0.3rem;
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+.horario-item:last-child {
+  margin-bottom: 0;
+}
+
+.horario-time {
+  font-weight: 600;
+  color: var(--primary-color);
+  flex: 1;
+}
+
+.horario-location-small {
+  background: #17a2b8;
+  color: white;
+  padding: 0.1rem 0.4rem;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
 .payment-info {
   margin: 1rem 0;
   padding: 1rem;

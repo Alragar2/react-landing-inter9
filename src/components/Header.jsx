@@ -15,7 +15,6 @@ const Header = () => {
             <li><a href="#equipacion" className="nav-link">Equipación</a></li>
             <li><a href="#inscripcion" className="nav-link">Inscripción</a></li>
             <li><a href="#about" className="nav-link">Sobre nosotros</a></li>
-            <li><a href="#faq" className="nav-link">FAQ</a></li>
           </ul>
           <div className="hamburger">
             <span className="bar"></span>

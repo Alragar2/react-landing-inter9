@@ -6,6 +6,7 @@ import './styles-modular.css';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import Gallery from './components/Gallery';
+import VideoSection from './components/VideoSection';
 import Pricing from './components/Pricing';
 import Inscription from './components/Inscription';
 import Contact from './components/Contact';
@@ -24,11 +25,11 @@ const HomePage = () => (
     <Hero />
     <Schedule />
     <Gallery />
+    <VideoSection />
     <Pricing />
     <Equipment />
     <Inscription />
     <About />
-    <FAQ />
     <Privacy />
     <Footer />
   </>

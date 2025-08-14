@@ -64,7 +64,12 @@
   font-size: var(--font-size-3xl);
   font-weight: 700;
   color: var(--primary-color);
-  margin-bottom: var(--spacing-lg);
+}
+
+.cloth {
+  font-size: var(--font-size-xs);
+  font-weight: 300;
+  color: var(--text-gray);
 }
 
 .price span {

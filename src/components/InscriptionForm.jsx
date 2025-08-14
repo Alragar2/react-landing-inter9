@@ -31,13 +31,64 @@ const InscriptionForm = ({ isVisible, onClose }) => {
             price: 40,
             period: "/mes",
             description: "Sesiones de entrenamiento grupales"
+        }
+    ];
+
+    const horariosDisponibles = [
+        { 
+            id: 'lunes-meliana-1', 
+            name: 'Lunes 18:00 - 18:30',
+            location: 'Meliana'
+        },
+        { 
+            id: 'lunes-meliana-2', 
+            name: 'Lunes 18:30 - 19:00',
+            location: 'Meliana'
+        },
+        { 
+            id: 'martes-albuixech-1', 
+            name: 'Martes 19:00 - 20:00',
+            location: 'Albuixech'
+        },
+        { 
+            id: 'martes-albuixech-2', 
+            name: 'Martes 19:30 - 20:30',
+            location: 'Albuixech'
+        },
+        { 
+            id: 'miercoles-albuixech-1', 
+            name: 'Miércoles 19:00 - 20:00',
+            location: 'Albuixech'
+        },
+        { 
+            id: 'miercoles-albuixech-2', 
+            name: 'Miércoles 19:30 - 20:00',
+            location: 'Albuixech'
+        },
+        { 
+            id: 'miercoles-meliana-1', 
+            name: 'Jueves 19:00 - 20:00',
+            location: 'Meliana'
+        },
+        { 
+            id: 'miercoles-meliana-2', 
+            name: 'Jueves 20:30 - 21:30',
+            location: 'Meliana'
+        },
+        { 
+            id: 'viernes-meliana-1', 
+            name: 'Viernes 18:30 - 19:30',
+            location: 'Meliana'
+        },
+        { 
+            id: 'viernes-meliana-2', 
+            name: 'Viernes 19:30 - 20:30',
+            location: 'Meliana'
         },
         {
-            id: 'campus-verano',
-            name: "Campus de Verano",
-            price: 120,
-            period: "/semana",
-            description: "Campus completo con equipación incluida"
+            id: 'domingo',
+            name: 'Partidos, consultar horario',
+            location: 'Meliana'
         }
     ];
 
@@ -51,6 +102,7 @@ const InscriptionForm = ({ isVisible, onClose }) => {
         talla: '',
         lateralidad: '',
         planSeleccionado: '',
+        horarios: [], // Cambiado a array para múltiples horarios
         precioTotal: 0,
         nombreTutor: '',
         telefono: '',
@@ -68,6 +120,12 @@ const InscriptionForm = ({ isVisible, onClose }) => {
 
     // Función para determinar si un campo es inválido
     const isFieldInvalid = (fieldName, fieldValue) => {
+        // Para horarios, validar solo si es plan grupal
+        if (fieldName === 'horarios') {
+            return formData.planSeleccionado === 'grupal-mensual' && 
+                   touchedFields[fieldName] && 
+                   (!fieldValue || fieldValue.length === 0);
+        }
         // Para campos select, siempre validar si están vacíos
         if (['categoria', 'demarcacion', 'talla', 'lateralidad', 'planSeleccionado'].includes(fieldName)) {
             return !fieldValue || fieldValue === '' || fieldValue.trim() === '';
@@ -78,6 +136,11 @@ const InscriptionForm = ({ isVisible, onClose }) => {
 
     // Función para determinar si un campo es válido y debe mostrarse en verde
     const isFieldValid = (fieldName, fieldValue) => {
+        // Para horarios, mostrar verde si es plan grupal y tiene selecciones
+        if (fieldName === 'horarios') {
+            return formData.planSeleccionado === 'grupal-mensual' && 
+                   fieldValue && fieldValue.length > 0;
+        }
         // Para campos select, mostrar verde si tienen un valor válido
         if (['categoria', 'demarcacion', 'talla', 'lateralidad', 'planSeleccionado'].includes(fieldName)) {
             return fieldValue && fieldValue !== '' && fieldValue.trim() !== '';
@@ -88,13 +151,15 @@ const InscriptionForm = ({ isVisible, onClose }) => {
 
     const handleInputChange = (e) => {
         const { name, value, type, checked } = e.target;
-        
+
         if (name === 'planSeleccionado') {
             const selectedPlan = pricingPlans.find(plan => plan.id === value);
             setFormData(prev => ({
                 ...prev,
                 [name]: value,
-                precioTotal: selectedPlan ? selectedPlan.price : 0
+                precioTotal: selectedPlan ? selectedPlan.price : 0,
+                // Limpiar horarios si no es plan grupal
+                horarios: value === 'grupal-mensual' ? prev.horarios : []
             }));
         } else {
             setFormData(prev => ({
@@ -102,11 +167,31 @@ const InscriptionForm = ({ isVisible, onClose }) => {
                 [name]: type === 'checkbox' ? checked : value
             }));
         }
-        
+
         // Marcamos como touched cuando se cambia cualquier valor
         setTouchedFields(prev => ({
             ...prev,
             [name]: true
+        }));
+    };
+
+    // Función para manejar la selección de múltiples horarios
+    const handleHorarioChange = (horarioId, isChecked) => {
+        setFormData(prev => {
+            const nuevosHorarios = isChecked 
+                ? [...prev.horarios, horarioId]
+                : prev.horarios.filter(id => id !== horarioId);
+            
+            return {
+                ...prev,
+                horarios: nuevosHorarios
+            };
+        });
+
+        // Marcar como touched
+        setTouchedFields(prev => ({
+            ...prev,
+            horarios: true
         }));
     };
 
@@ -160,6 +245,7 @@ const InscriptionForm = ({ isVisible, onClose }) => {
                     talla: '',
                     lateralidad: '',
                     planSeleccionado: '',
+                    horarios: [], // Array vacío
                     precioTotal: 0,
                     nombreTutor: '',
                     telefono: '',
@@ -197,7 +283,7 @@ const InscriptionForm = ({ isVisible, onClose }) => {
     return (
         <div className="registration-form-container">
             <form onSubmit={handleSubmit} className="registration-form">
-                <h3>Formulario de Inscripción - Campus de Verano 2025</h3>
+                <h3>Formulario de Inscripción</h3>
 
                 <div className="form-section">
                     <h4>Datos del Niño/a</h4>
@@ -348,27 +434,60 @@ const InscriptionForm = ({ isVisible, onClose }) => {
 
                 <div className="form-section">
                     <h4>Plan y Precio</h4>
-                    <div className="form-group">
-                        <label htmlFor="planSeleccionado">Selecciona tu Plan *</label>
-                        <select
-                            id="planSeleccionado"
-                            name="planSeleccionado"
-                            value={formData.planSeleccionado}
-                            onChange={handleInputChange}
-                            onBlur={handleBlur}
-                            onFocus={handleFocus}
-                            className={`${touchedFields.planSeleccionado ? 'touched' : ''} ${isFieldInvalid('planSeleccionado', formData.planSeleccionado) ? 'invalid' : ''} ${isFieldValid('planSeleccionado', formData.planSeleccionado) ? 'valid' : ''}`}
-                            required
-                        >
-                            <option value="">Seleccione un plan</option>
-                            {pricingPlans.map((plan) => (
-                                <option key={plan.id} value={plan.id}>
-                                    {plan.name} - €{plan.price}{plan.period} - {plan.description}
-                                </option>
-                            ))}
-                        </select>
+                    <div className="form-row">
+                        <div className="form-group">
+                            <label htmlFor="planSeleccionado">Selecciona tu Plan *</label>
+                            <select
+                                id="planSeleccionado"
+                                name="planSeleccionado"
+                                value={formData.planSeleccionado}
+                                onChange={handleInputChange}
+                                onBlur={handleBlur}
+                                onFocus={handleFocus}
+                                className={`${touchedFields.planSeleccionado ? 'touched' : ''} ${isFieldInvalid('planSeleccionado', formData.planSeleccionado) ? 'invalid' : ''} ${isFieldValid('planSeleccionado', formData.planSeleccionado) ? 'valid' : ''}`}
+                                required
+                            >
+                                <option value="">Seleccione un plan</option>
+                                {pricingPlans.map((plan) => (
+                                    <option key={plan.id} value={plan.id}>
+                                        {plan.name} - €{plan.price}{plan.period} - {plan.description}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
                     </div>
-                    
+
+                    {/* Horarios - Solo para plan grupal */}
+                    {formData.planSeleccionado === 'grupal-mensual' && (
+                            <div className="form-group">
+                                <label>Horarios Disponibles *</label>
+                                <p className="field-description">Selecciona los horarios que te interesan:</p>
+                                <div className={`horarios-checkbox-group ${touchedFields.horarios ? 'touched' : ''} ${isFieldInvalid('horarios', formData.horarios) ? 'invalid' : ''} ${isFieldValid('horarios', formData.horarios) ? 'valid' : ''}`}>
+                                    {horariosDisponibles.map((horario) => (
+                                        <label key={horario.id} className="horario-checkbox-label">
+                                            <input
+                                                type="checkbox"
+                                                value={horario.id}
+                                                checked={formData.horarios.includes(horario.id)}
+                                                onChange={(e) => handleHorarioChange(horario.id, e.target.checked)}
+                                            />
+                                            <span className="horario-info">
+                                                <span className="horario-time">{horario.name}</span>
+                                                <span className="horario-location">{horario.location}</span>
+                                            </span>
+                                        </label>
+                                    ))}
+                                </div>
+                                {formData.horarios.length > 0 && (
+                                    <div className="selected-horarios">
+                                        <small>
+                                            <strong>Horarios seleccionados:</strong> {formData.horarios.length}
+                                        </small>
+                                    </div>
+                                )}
+                            </div>
+                    )}
+
                     {formData.planSeleccionado && (
                         <div className="price-summary">
                             <div className="selected-plan-info">
@@ -378,7 +497,7 @@ const InscriptionForm = ({ isVisible, onClose }) => {
                                         {pricingPlans.find(p => p.id === formData.planSeleccionado)?.name}
                                     </span>
                                     <span className="plan-price">
-                                        €{formData.precioTotal}{pricingPlans.find(p => p.id === formData.planSeleccionado)?.period}
+                                        €{formData.precioTotal}{pricingPlans.find(p => p.id === formData.planSeleccionado)?.period }
                                     </span>
                                 </div>
                                 <p className="plan-description">
@@ -425,19 +544,21 @@ const InscriptionForm = ({ isVisible, onClose }) => {
 
                 <div className="form-section">
                     <h4>Dirección</h4>
-                    <div className="form-group">
-                        <label htmlFor="direccion">Dirección *</label>
-                        <input
-                            type="text"
-                            id="direccion"
-                            name="direccion"
-                            value={formData.direccion}
-                            onChange={handleInputChange}
-                            onBlur={handleBlur}
-                            className={`${touchedFields.direccion ? 'touched' : ''} ${isFieldInvalid('direccion', formData.direccion) ? 'invalid' : ''}`}
-                            placeholder="Calle, número, piso, puerta"
-                            required
-                        />
+                    <div className="form-row">
+                        <div className="form-group">
+                            <label htmlFor="direccion">Dirección *</label>
+                            <input
+                                type="text"
+                                id="direccion"
+                                name="direccion"
+                                value={formData.direccion}
+                                onChange={handleInputChange}
+                                onBlur={handleBlur}
+                                className={`${touchedFields.direccion ? 'touched' : ''} ${isFieldInvalid('direccion', formData.direccion) ? 'invalid' : ''}`}
+                                placeholder="Calle, número, piso, puerta"
+                                required
+                            />
+                        </div>
                     </div>
                     <div className="form-row">
                         <div className="form-group">
@@ -512,7 +633,7 @@ const InscriptionForm = ({ isVisible, onClose }) => {
                                 onChange={handleInputChange}
                                 required
                             />
-                            Autorizo la participación de mi hijo/a en todas las actividades del campus y la toma de fotografías con fines promocionales *
+                            Autorizo la participación de mi hijo/a en todas las actividades de la academia inter9 y la toma de fotografías con fines promocionales *
                         </label>
                     </div>
 
@@ -534,7 +655,7 @@ const InscriptionForm = ({ isVisible, onClose }) => {
                     <label>
                         EL PAGO SE EFECTUARA EN LA SIGUIENTE CUENTA BANCARIA:
                         <strong> ES51 3159 0017 7029 6262 3225. </strong>
-                        PONER EN CONCEPTO CAMPUS, NOMBRE Y APELLIDO DEL NIÑO.
+                        PONER EN CONCEPTO INTER9, NOMBRE Y APELLIDO DEL NIÑO.
                     </label>
                     <div className='form-note'>
                         <label>
