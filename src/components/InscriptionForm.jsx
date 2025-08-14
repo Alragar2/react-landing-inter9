@@ -35,21 +35,31 @@ const InscriptionForm = ({ isVisible, onClose }) => {
         },
         {
             id: 'miercoles-meliana-1',
-            name: 'Viernes 17:30 - 18:00',
+            name: 'Miércoles 19:00 - 20:00',
             location: 'Meliana'
         },
         {
             id: 'miercoles-meliana-2',
-            name: 'Viernes 17:30 - 18:30',
+            name: 'Miércoles 20:30 - 21:30',
             location: 'Meliana'
         },
         {
             id: 'viernes-meliana-1',
-            name: 'Viernes 18:00 - 19:00',
+            name: 'Viernes 17:30 - 18:00',
             location: 'Meliana'
         },
         {
             id: 'viernes-meliana-2',
+            name: 'Viernes 17:30 - 18:30',
+            location: 'Meliana'
+        },
+        {
+            id: 'viernes-meliana-3',
+            name: 'Viernes 18:00 - 19:00',
+            location: 'Meliana'
+        },
+        {
+            id: 'viernes-meliana-4',
             name: 'Viernes 19:30 - 20:30',
             location: 'Meliana'
         },
