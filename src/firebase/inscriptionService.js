@@ -261,7 +261,6 @@ export const inscriptionService = {
       'demarcacion',
       'talla',
       'lateralidad',
-      'planSeleccionado',
       'nombreTutor',
       'telefono',
       'direccion',
@@ -275,6 +274,14 @@ export const inscriptionService = {
       return {
         isValid: false,
         message: `Los siguientes campos son obligatorios: ${missingFields.join(', ')}`
+      };
+    }
+
+    // Validar que se haya seleccionado al menos un horario
+    if (!data.horarios || !Array.isArray(data.horarios) || data.horarios.length === 0) {
+      return {
+        isValid: false,
+        message: 'Debes seleccionar al menos un horario'
       };
     }
 

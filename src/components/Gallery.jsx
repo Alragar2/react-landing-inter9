@@ -10,14 +10,24 @@ const Gallery = () => {
       alt: "Momentos Especiales"
     },
     {
-      image: "/images/gallery-childs2.jpg", 
-      title: "Torneos",
-      alt: "Torneos"
-    },
-    {
-      image: "/images/Campus-Meliana-Inter-Soccer-Academy.png",
+      image: "/images/gallery-levante.jpeg", 
       title: "Visitas de profesionales",
       alt: "Visitas de profesionales"
+    },
+    {
+      image: "/images/gallery-equipo.jpeg",
+      title: "Compañerismo",
+      alt: "Compañerismo"
+    },
+    {
+      image: "/images/gallery-levante-borja.jpeg",
+      title: "Entrenamiento con profesionales",
+      alt: "Entrenamiento con profesionales"
+    },
+    {
+      image: "/images/gallery-esfuerzo.jpg",
+      title: "Esfuerzo",
+      alt: "Esfuerzo"
     }
   ];
 
@@ -49,7 +59,7 @@ const Gallery = () => {
       <div className="gallery-carousel">
         <div 
           className="carousel-container"
-          style={{ transform: `translateX(-${currentSlide * 33.333}%)` }}
+          style={{ transform: `translateX(-${currentSlide * 20}%)` }}
         >
           {slides.map((slide, index) => (
             <div key={index} className="carousel-slide">

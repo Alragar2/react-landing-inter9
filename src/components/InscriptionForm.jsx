@@ -2,86 +2,54 @@ import React, { useState } from 'react';
 import { inscriptionService } from '../firebase/inscriptionService';
 
 const InscriptionForm = ({ isVisible, onClose }) => {
-    // Planes de precios disponibles
-    const pricingPlans = [
-        {
-            id: 'individual',
-            name: "Individual",
-            price: 25,
-            period: "/sesión",
-            description: "1 sesión de entrenamiento personalizado"
-        },
-        {
-            id: 'pareja',
-            name: "Pareja",
-            price: 20,
-            period: "/sesión",
-            description: "1 sesión de entrenamiento (20€ por persona)"
-        },
-        {
-            id: 'trio',
-            name: "Trío",
-            price: 15,
-            period: "/sesión",
-            description: "1 sesión de entrenamiento (15€ por persona)"
-        },
-        {
-            id: 'grupal-mensual',
-            name: "Grupal Mensual",
-            price: 40,
-            period: "/mes",
-            description: "Sesiones de entrenamiento grupales"
-        }
-    ];
-
     const horariosDisponibles = [
-        { 
-            id: 'lunes-meliana-1', 
+        {
+            id: 'lunes-meliana-1',
             name: 'Lunes 18:00 - 18:30',
             location: 'Meliana'
         },
-        { 
-            id: 'lunes-meliana-2', 
+        {
+            id: 'lunes-meliana-2',
             name: 'Lunes 18:30 - 19:00',
             location: 'Meliana'
         },
-        { 
-            id: 'martes-albuixech-1', 
+        {
+            id: 'martes-albuixech-1',
             name: 'Martes 19:00 - 20:00',
             location: 'Albuixech'
         },
-        { 
-            id: 'martes-albuixech-2', 
+        {
+            id: 'martes-albuixech-2',
             name: 'Martes 19:30 - 20:30',
             location: 'Albuixech'
         },
-        { 
-            id: 'miercoles-albuixech-1', 
+        {
+            id: 'miercoles-albuixech-1',
             name: 'Miércoles 19:00 - 20:00',
             location: 'Albuixech'
         },
-        { 
-            id: 'miercoles-albuixech-2', 
+        {
+            id: 'miercoles-albuixech-2',
             name: 'Miércoles 19:30 - 20:00',
             location: 'Albuixech'
         },
-        { 
-            id: 'miercoles-meliana-1', 
+        {
+            id: 'miercoles-meliana-1',
             name: 'Jueves 19:00 - 20:00',
             location: 'Meliana'
         },
-        { 
-            id: 'miercoles-meliana-2', 
+        {
+            id: 'miercoles-meliana-2',
             name: 'Jueves 20:30 - 21:30',
             location: 'Meliana'
         },
-        { 
-            id: 'viernes-meliana-1', 
+        {
+            id: 'viernes-meliana-1',
             name: 'Viernes 18:30 - 19:30',
             location: 'Meliana'
         },
-        { 
-            id: 'viernes-meliana-2', 
+        {
+            id: 'viernes-meliana-2',
             name: 'Viernes 19:30 - 20:30',
             location: 'Meliana'
         },
@@ -101,9 +69,7 @@ const InscriptionForm = ({ isVisible, onClose }) => {
         demarcacion: '',
         talla: '',
         lateralidad: '',
-        planSeleccionado: '',
-        horarios: [], // Cambiado a array para múltiples horarios
-        precioTotal: 0,
+        horarios: [], // Array para múltiples horarios
         nombreTutor: '',
         telefono: '',
         direccion: '',
@@ -120,53 +86,40 @@ const InscriptionForm = ({ isVisible, onClose }) => {
 
     // Función para determinar si un campo es inválido
     const isFieldInvalid = (fieldName, fieldValue) => {
-        // Para horarios, validar solo si es plan grupal
+        // Para horarios, validar si es array vacío
         if (fieldName === 'horarios') {
-            return formData.planSeleccionado === 'grupal-mensual' && 
-                   touchedFields[fieldName] && 
+            return touchedFields[fieldName] && 
                    (!fieldValue || fieldValue.length === 0);
         }
-        // Para campos select, siempre validar si están vacíos
-        if (['categoria', 'demarcacion', 'talla', 'lateralidad', 'planSeleccionado'].includes(fieldName)) {
-            return !fieldValue || fieldValue === '' || fieldValue.trim() === '';
+        // Para campos select, siempre validar si están vacíos (excluyendo horarios)
+        if (['categoria', 'demarcacion', 'talla', 'lateralidad'].includes(fieldName)) {
+            return !fieldValue || fieldValue === '' || (typeof fieldValue === 'string' && fieldValue.trim() === '');
         }
         // Para otros campos, solo validar si han sido tocados
-        return touchedFields[fieldName] && (!fieldValue || fieldValue === '' || fieldValue.trim() === '');
+        return touchedFields[fieldName] && (!fieldValue || fieldValue === '' || (typeof fieldValue === 'string' && fieldValue.trim() === ''));
     };
 
     // Función para determinar si un campo es válido y debe mostrarse en verde
     const isFieldValid = (fieldName, fieldValue) => {
-        // Para horarios, mostrar verde si es plan grupal y tiene selecciones
+        // Para horarios, mostrar verde si es array con elementos
         if (fieldName === 'horarios') {
-            return formData.planSeleccionado === 'grupal-mensual' && 
-                   fieldValue && fieldValue.length > 0;
+            return fieldValue && Array.isArray(fieldValue) && fieldValue.length > 0;
         }
-        // Para campos select, mostrar verde si tienen un valor válido
-        if (['categoria', 'demarcacion', 'talla', 'lateralidad', 'planSeleccionado'].includes(fieldName)) {
-            return fieldValue && fieldValue !== '' && fieldValue.trim() !== '';
+        // Para campos select, mostrar verde si tienen un valor válido (excluyendo horarios)
+        if (['categoria', 'demarcacion', 'talla', 'lateralidad'].includes(fieldName)) {
+            return fieldValue && fieldValue !== '' && (typeof fieldValue === 'string' ? fieldValue.trim() !== '' : true);
         }
         // Para otros campos, solo si han sido tocados y tienen valor
-        return touchedFields[fieldName] && fieldValue && fieldValue !== '' && fieldValue.trim() !== '';
+        return touchedFields[fieldName] && fieldValue && fieldValue !== '' && (typeof fieldValue === 'string' ? fieldValue.trim() !== '' : true);
     };
 
     const handleInputChange = (e) => {
         const { name, value, type, checked } = e.target;
 
-        if (name === 'planSeleccionado') {
-            const selectedPlan = pricingPlans.find(plan => plan.id === value);
-            setFormData(prev => ({
-                ...prev,
-                [name]: value,
-                precioTotal: selectedPlan ? selectedPlan.price : 0,
-                // Limpiar horarios si no es plan grupal
-                horarios: value === 'grupal-mensual' ? prev.horarios : []
-            }));
-        } else {
-            setFormData(prev => ({
-                ...prev,
-                [name]: type === 'checkbox' ? checked : value
-            }));
-        }
+        setFormData(prev => ({
+            ...prev,
+            [name]: type === 'checkbox' ? checked : value
+        }));
 
         // Marcamos como touched cuando se cambia cualquier valor
         setTouchedFields(prev => ({
@@ -178,10 +131,10 @@ const InscriptionForm = ({ isVisible, onClose }) => {
     // Función para manejar la selección de múltiples horarios
     const handleHorarioChange = (horarioId, isChecked) => {
         setFormData(prev => {
-            const nuevosHorarios = isChecked 
+            const nuevosHorarios = isChecked
                 ? [...prev.horarios, horarioId]
                 : prev.horarios.filter(id => id !== horarioId);
-            
+
             return {
                 ...prev,
                 horarios: nuevosHorarios
@@ -244,9 +197,7 @@ const InscriptionForm = ({ isVisible, onClose }) => {
                     demarcacion: '',
                     talla: '',
                     lateralidad: '',
-                    planSeleccionado: '',
                     horarios: [], // Array vacío
-                    precioTotal: 0,
                     nombreTutor: '',
                     telefono: '',
                     direccion: '',
@@ -433,79 +384,36 @@ const InscriptionForm = ({ isVisible, onClose }) => {
                 </div>
 
                 <div className="form-section">
-                    <h4>Plan y Precio</h4>
-                    <div className="form-row">
-                        <div className="form-group">
-                            <label htmlFor="planSeleccionado">Selecciona tu Plan *</label>
-                            <select
-                                id="planSeleccionado"
-                                name="planSeleccionado"
-                                value={formData.planSeleccionado}
-                                onChange={handleInputChange}
-                                onBlur={handleBlur}
-                                onFocus={handleFocus}
-                                className={`${touchedFields.planSeleccionado ? 'touched' : ''} ${isFieldInvalid('planSeleccionado', formData.planSeleccionado) ? 'invalid' : ''} ${isFieldValid('planSeleccionado', formData.planSeleccionado) ? 'valid' : ''}`}
-                                required
-                            >
-                                <option value="">Seleccione un plan</option>
-                                {pricingPlans.map((plan) => (
-                                    <option key={plan.id} value={plan.id}>
-                                        {plan.name} - €{plan.price}{plan.period} - {plan.description}
-                                    </option>
-                                ))}
-                            </select>
+                    <h4>Horarios</h4>
+
+                    {/* Horarios disponibles */}
+                    <div className="form-group">
+                        <label>Horarios Disponibles *</label>
+                        <p className="field-description">Selecciona los horarios que te interesan:</p>
+                        <div className={`horarios-checkbox-group ${touchedFields.horarios ? 'touched' : ''} ${isFieldInvalid('horarios', formData.horarios) ? 'invalid' : ''} ${isFieldValid('horarios', formData.horarios) ? 'valid' : ''}`}>
+                            {horariosDisponibles.map((horario) => (
+                                <label key={horario.id} className="horario-checkbox-label">
+                                    <input
+                                        type="checkbox"
+                                        value={horario.id}
+                                        checked={formData.horarios.includes(horario.id)}
+                                        onChange={(e) => handleHorarioChange(horario.id, e.target.checked)}
+                                    />
+                                    <span className="horario-info">
+                                        <span className="horario-time">{horario.name}</span>
+                                        <span className="horario-location">{horario.location}</span>
+                                    </span>
+                                </label>
+                            ))}
                         </div>
+                        {formData.horarios.length > 0 && (
+                            <div className="selected-horarios">
+                                <small>
+                                    <strong>Horarios seleccionados:</strong> {formData.horarios.length}
+                                </small>
+                            </div>
+                        )}
                     </div>
-
-                    {/* Horarios - Solo para plan grupal */}
-                    {formData.planSeleccionado === 'grupal-mensual' && (
-                            <div className="form-group">
-                                <label>Horarios Disponibles *</label>
-                                <p className="field-description">Selecciona los horarios que te interesan:</p>
-                                <div className={`horarios-checkbox-group ${touchedFields.horarios ? 'touched' : ''} ${isFieldInvalid('horarios', formData.horarios) ? 'invalid' : ''} ${isFieldValid('horarios', formData.horarios) ? 'valid' : ''}`}>
-                                    {horariosDisponibles.map((horario) => (
-                                        <label key={horario.id} className="horario-checkbox-label">
-                                            <input
-                                                type="checkbox"
-                                                value={horario.id}
-                                                checked={formData.horarios.includes(horario.id)}
-                                                onChange={(e) => handleHorarioChange(horario.id, e.target.checked)}
-                                            />
-                                            <span className="horario-info">
-                                                <span className="horario-time">{horario.name}</span>
-                                                <span className="horario-location">{horario.location}</span>
-                                            </span>
-                                        </label>
-                                    ))}
-                                </div>
-                                {formData.horarios.length > 0 && (
-                                    <div className="selected-horarios">
-                                        <small>
-                                            <strong>Horarios seleccionados:</strong> {formData.horarios.length}
-                                        </small>
-                                    </div>
-                                )}
-                            </div>
-                    )}
-
-                    {formData.planSeleccionado && (
-                        <div className="price-summary">
-                            <div className="selected-plan-info">
-                                <h5>Plan Seleccionado:</h5>
-                                <div className="plan-details">
-                                    <span className="plan-name">
-                                        {pricingPlans.find(p => p.id === formData.planSeleccionado)?.name}
-                                    </span>
-                                    <span className="plan-price">
-                                        €{formData.precioTotal}{pricingPlans.find(p => p.id === formData.planSeleccionado)?.period }
-                                    </span>
-                                </div>
-                                <p className="plan-description">
-                                    {pricingPlans.find(p => p.id === formData.planSeleccionado)?.description}
-                                </p>
-                            </div>
-                        </div>
-                    )}
                 </div>
 
                 <div className="form-section">

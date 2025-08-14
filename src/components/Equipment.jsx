@@ -12,8 +12,8 @@ const Equipment = () => {
       description: "Camiseta oficial Inter9 Soccer Academy",
       image: "/images/equipment-inter9.png",
       gallery: [
-        "/images/equipment2-inter9.jpg",
-        "/images/shirt-inter9.jpg"
+        "/images/equipment2-inter9.jpeg",
+        "/images/shirt-inter9.jpeg"
       ],
       features: ["Tejido transpirable", "Escudo bordado", "Tecnología Dri-FIT"]
     }
