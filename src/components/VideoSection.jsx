@@ -41,27 +41,6 @@ const VideoSection = () => {
                 </div>
               </div>
               
-              <div className="video-features">
-                <h3>¿Qué verás en el video?</h3>
-                <ul>
-                  <li>
-                    <i className="fas fa-check"></i>
-                    Instalaciones modernas y seguras
-                  </li>
-                  <li>
-                    <i className="fas fa-check"></i>
-                    Metodología de entrenamiento profesional
-                  </li>
-                  <li>
-                    <i className="fas fa-check"></i>
-                    Ambiente familiar y motivador
-                  </li>
-                  <li>
-                    <i className="fas fa-check"></i>
-                    Testimonios de jugadores y padres
-                  </li>
-                </ul>
-              </div>
             </div>
           </div>
         </div>
