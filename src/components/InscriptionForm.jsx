@@ -45,7 +45,7 @@ const InscriptionForm = ({ isVisible, onClose }) => {
         },
         {
             id: 'viernes-meliana-1',
-            name: 'Viernes 17:30 - 18:00',
+            name: 'Viernes 17:00 - 18:00',
             location: 'Meliana'
         },
         {
@@ -60,7 +60,7 @@ const InscriptionForm = ({ isVisible, onClose }) => {
         },
         {
             id: 'viernes-meliana-4',
-            name: 'Viernes 19:30 - 20:30',
+            name: 'Viernes 18:30 - 19:30',
             location: 'Meliana'
         },
         {
