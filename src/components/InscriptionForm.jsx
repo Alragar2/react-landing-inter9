@@ -30,7 +30,7 @@ const InscriptionForm = ({ isVisible, onClose }) => {
         },
         {
             id: 'miercoles-albuixech-2',
-            name: 'Miércoles 19:30 - 20:00',
+            name: 'Miércoles 19:30 - 20:30',
             location: 'Albuixech'
         },
         {

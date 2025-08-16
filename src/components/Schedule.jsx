@@ -23,7 +23,7 @@ const Schedule = () => {
       location: "ALBUIXECH",
       sessions: [
         { time: "19:00 A 20:00" },
-        { time: "19:30 A 20:00" }
+        { time: "19:30 A 20:30" }
       ]
     },
     {
