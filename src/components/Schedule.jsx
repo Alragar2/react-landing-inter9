@@ -46,8 +46,8 @@ const Schedule = () => {
       day: "VIERNES",
       location: "MELIANA",
       sessions: [
-        { time: "18:30 A 19:30" },
-        { time: "19:30 A 20:30" }
+        { time: "18:00 A 19:00" },
+        { time: "18:30 A 19:30" }
       ]
     },
     {
