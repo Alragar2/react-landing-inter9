@@ -1,4 +1,5 @@
 import React from 'react';
+import { horariosDisponibles } from '../utils/horariosConfig';
 
 const FiltersPanel = ({ 
     showFilters, 
@@ -8,65 +9,6 @@ const FiltersPanel = ({
     onClearFilters, 
     onToggleFilters 
 }) => {
-    // Array de horarios disponibles para mapear IDs a nombres
-    const horariosDisponibles = [
-        { 
-            id: 'lunes-meliana-1', 
-            name: 'Lunes 18:00 - 18:30',
-            location: 'Meliana'
-        },
-        { 
-            id: 'lunes-meliana-2', 
-            name: 'Lunes 18:30 - 19:00',
-            location: 'Meliana'
-        },
-        { 
-            id: 'martes-albuixech-1', 
-            name: 'Martes 19:00 - 20:00',
-            location: 'Albuixech'
-        },
-        { 
-            id: 'martes-albuixech-2', 
-            name: 'Martes 19:30 - 20:30',
-            location: 'Albuixech'
-        },
-        { 
-            id: 'miercoles-albuixech-1', 
-            name: 'Miércoles 19:00 - 20:00',
-            location: 'Albuixech'
-        },
-        { 
-            id: 'miercoles-albuixech-2', 
-            name: 'Miércoles 19:30 - 20:00',
-            location: 'Albuixech'
-        },
-        { 
-            id: 'miercoles-meliana-1', 
-            name: 'Jueves 19:00 - 20:00',
-            location: 'Meliana'
-        },
-        { 
-            id: 'miercoles-meliana-2', 
-            name: 'Jueves 20:30 - 21:30',
-            location: 'Meliana'
-        },
-        { 
-            id: 'viernes-meliana-1', 
-            name: 'Viernes 18:30 - 19:30',
-            location: 'Meliana'
-        },
-        { 
-            id: 'viernes-meliana-2', 
-            name: 'Viernes 19:30 - 20:30',
-            location: 'Meliana'
-        },
-        {
-            id: 'domingo',
-            name: 'Partidos, consultar horario',
-            location: 'Meliana'
-        }
-    ];
-
     // Obtener horarios únicos de las inscripciones
     const getUniqueSchedules = () => {
         const allScheduleIds = [];
