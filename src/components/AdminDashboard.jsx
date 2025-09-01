@@ -21,7 +21,8 @@ const AdminDashboard = ({ user, onLogout }) => {
     const [filters, setFilters] = useState({
         horario: '',
         edad: '',
-        demarcacion: ''
+        demarcacion: '',
+        sortBy: 'newest'
     });
 
     useEffect(() => {
@@ -97,6 +98,22 @@ const AdminDashboard = ({ user, onLogout }) => {
         const matchesDemarcacion = !filters.demarcacion || inscription.demarcacion === filters.demarcacion;
         
         return matchesSearch && matchesSchedule && matchesAge && matchesDemarcacion;
+    }).sort((a, b) => {
+        // Aplicar ordenamiento según el filtro seleccionado
+        switch (filters.sortBy) {
+            case 'oldest':
+                // Más antiguos primero
+                const aDateOld = a.createdAt?.seconds || a.fechaCreacion?.seconds || 0;
+                const bDateOld = b.createdAt?.seconds || b.fechaCreacion?.seconds || 0;
+                return aDateOld - bDateOld;
+            
+            case 'newest':
+            default:
+                // Más recientes primero (por defecto)
+                const aDateNew = a.createdAt?.seconds || a.fechaCreacion?.seconds || 0;
+                const bDateNew = b.createdAt?.seconds || b.fechaCreacion?.seconds || 0;
+                return bDateNew - aDateNew;
+        }
     });
 
     const formatDate = (dateString) => {
@@ -167,7 +184,8 @@ const AdminDashboard = ({ user, onLogout }) => {
         setFilters({
             horario: '',
             edad: '',
-            demarcacion: ''
+            demarcacion: '',
+            sortBy: 'newest'
         });
     };
 

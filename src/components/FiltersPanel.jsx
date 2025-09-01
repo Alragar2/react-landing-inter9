@@ -49,6 +49,14 @@ const FiltersPanel = ({
         return [...new Set(demarcation)].filter(Boolean).sort();
     };
 
+    // Opciones de ordenamiento
+    const getSortOptions = () => {
+        return [
+            { value: 'newest', label: 'Más recientes primero' },
+            { value: 'oldest', label: 'Más antiguos primero' }
+        ];
+    };
+
     return (
         <>
             {/* Overlay para móvil */}
@@ -131,6 +139,22 @@ const FiltersPanel = ({
                             {getDemarcation().map(demarcacion => (
                                 <option key={demarcacion} value={demarcacion}>
                                     {demarcacion}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <div className="filter-group">
+                        <label htmlFor="sort-filter">Ordenar por</label>
+                        <select
+                            id="sort-filter"
+                            className="filter-select"
+                            value={filters.sortBy || 'newest'}
+                            onChange={(e) => onFilterChange('sortBy', e.target.value)}
+                        >
+                            {getSortOptions().map(option => (
+                                <option key={option.value} value={option.value}>
+                                    {option.label}
                                 </option>
                             ))}
                         </select>
